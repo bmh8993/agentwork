@@ -1,4 +1,4 @@
-# ARD-0013: Run 상태 머신과 Timeout/Cancel 정책
+# ADR-0013: Run 상태 머신과 Timeout/Cancel 정책
 
 - Status: Superseded
 - Date: 2026-03-12
@@ -9,7 +9,7 @@
 MVP는 `fail-fast`와 수동 재실행 규칙을 갖는다.
 여기에 상태 전이와 timeout/cancel 규칙이 없으면 UI와 엔진 상태가 어긋날 수 있다.
 하지만 이후 합의에서 실행 엔진의 독자 상태머신을 정의하지 않고, OpenCode 실행 현황을 chat UI에서 표시/개입하는 모델로 정리했다.
-본 문서는 Action 중심 모델(ARD-0018)과 Agent 카드 UX(ARD-0017)로 대체된다.
+본 문서는 Action 중심 모델(ADR-0018)과 Agent 카드 UX(ADR-0017)로 대체된다.
 
 ## Decision
 
@@ -53,10 +53,10 @@ MVP `SkillRun`/노드 실행 상태 머신과 timeout/cancel 동작을 고정한
 
 ## Related Decisions
 
-1. [ARD-0004-skill-canvas-minimum-execution-rules.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0004-skill-canvas-minimum-execution-rules.md)
-2. [ARD-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0005-failure-taxonomy-and-error-ux.md)
-3. Superseded by: [ARD-0018-action-only-workflow-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0018-action-only-workflow-model.md)
-4. Superseded by: [ARD-0017-agent-card-ux-and-chat-refinement.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0017-agent-card-ux-and-chat-refinement.md)
+1. [ADR-0004-skill-canvas-minimum-execution-rules.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0004-skill-canvas-minimum-execution-rules.md)
+2. [ADR-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0005-failure-taxonomy-and-error-ux.md)
+3. Superseded by: [ADR-0018-action-only-workflow-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0018-action-only-workflow-model.md)
+4. Superseded by: [ADR-0017-agent-card-ux-and-chat-refinement.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0017-agent-card-ux-and-chat-refinement.md)
 
 ## Status Transition Notes
 

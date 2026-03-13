@@ -1,4 +1,4 @@
-# ARD-0018: Action 텍스트 중심 워크플로우 모델 (Condition 제거)
+# ADR-0018: Action 텍스트 중심 워크플로우 모델 (Condition 제거)
 
 - Status: Accepted
 - Date: 2026-03-12
@@ -39,7 +39,7 @@ Condition 개념은 MVP 범위에서 사용하지 않는다.
 제약:
 
 1. 조건 분기 시나리오는 MVP에서 표현할 수 없다.
-2. 고급 자동화 시나리오는 후속 ARD에서 재도입이 필요하다.
+2. 고급 자동화 시나리오는 후속 ADR에서 재도입이 필요하다.
 
 ## Scope
 
@@ -57,10 +57,10 @@ Condition 개념은 MVP 범위에서 사용하지 않는다.
 
 ## Related Decisions
 
-1. [ARD-0017-agent-card-ux-and-chat-refinement.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0017-agent-card-ux-and-chat-refinement.md)
-2. [ARD-0009-skill-json-v1-schema-and-acceptance-tests.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0009-skill-json-v1-schema-and-acceptance-tests.md)
-3. Supersedes: [ARD-0004-skill-canvas-minimum-execution-rules.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0004-skill-canvas-minimum-execution-rules.md)
-4. Supersedes: [ARD-0011-condition-node-expression-policy.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0011-condition-node-expression-policy.md)
+1. [ADR-0017-agent-card-ux-and-chat-refinement.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0017-agent-card-ux-and-chat-refinement.md)
+2. [ADR-0009-skill-json-v1-schema-and-acceptance-tests.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0009-skill-json-v1-schema-and-acceptance-tests.md)
+3. Supersedes: [ADR-0004-skill-canvas-minimum-execution-rules.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0004-skill-canvas-minimum-execution-rules.md)
+4. Supersedes: [ADR-0011-condition-node-expression-policy.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0011-condition-node-expression-policy.md)
 
 ## References
 

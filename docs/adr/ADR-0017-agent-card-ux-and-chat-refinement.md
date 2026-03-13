@@ -1,4 +1,4 @@
-# ARD-0017: Agent 카드 중심 UX와 채팅 구체화 플로우
+# ADR-0017: Agent 카드 중심 UX와 채팅 구체화 플로우
 
 - Status: Accepted
 - Date: 2026-03-12
@@ -75,11 +75,11 @@ MVP 빌더 UX는 Agent 카드 중심으로 구성하고, LLM 가이드 기반 �
 
 ## Related Decisions
 
-1. [ARD-0002-domain-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0002-domain-model.md)
-2. [ARD-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0007-skill-json-single-source-and-md-generation.md)
-3. [ARD-0009-skill-json-v1-schema-and-acceptance-tests.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0009-skill-json-v1-schema-and-acceptance-tests.md)
-4. [ARD-0015-node-type-catalog-and-extension-policy.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0015-node-type-catalog-and-extension-policy.md)
-5. [ARD-0018-action-only-workflow-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0018-action-only-workflow-model.md)
+1. [ADR-0002-domain-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0002-domain-model.md)
+2. [ADR-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0007-skill-json-single-source-and-md-generation.md)
+3. [ADR-0009-skill-json-v1-schema-and-acceptance-tests.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0009-skill-json-v1-schema-and-acceptance-tests.md)
+4. [ADR-0015-node-type-catalog-and-extension-policy.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0015-node-type-catalog-and-extension-policy.md)
+5. [ADR-0018-action-only-workflow-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0018-action-only-workflow-model.md)
 
 ## References
 

@@ -1,4 +1,4 @@
-# ARD-0002: 도메인 모델 정의 (MVP)
+# ADR-0002: 도메인 모델 정의 (MVP)
 
 - Status: Accepted
 - Date: 2026-03-12
@@ -58,7 +58,7 @@ MVP 도메인 모델은 아래 6개 엔티티로 고정한다.
 제약:
 
 1. Plugin 내부 세부 스키마 표준화는 후속 결정이 필요하다.
-2. Skill 그래프 실행 semantics(병렬, 재시도 정책)는 별도 ARD에서 확정해야 한다.
+2. Skill 그래프 실행 semantics(병렬, 재시도 정책)는 별도 ADR에서 확정해야 한다.
 
 ## Scope
 
@@ -77,11 +77,11 @@ MVP 도메인 모델은 아래 6개 엔티티로 고정한다.
 
 ## Related Decisions
 
-1. [ARD-0001-mvp-distribution-and-installation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0001-mvp-distribution-and-installation.md)
-2. [ARD-0003-skill-canonical-and-gui-meta-separation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0003-skill-canonical-and-gui-meta-separation.md) (Superseded)
-3. [ARD-0004-skill-canvas-minimum-execution-rules.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0004-skill-canvas-minimum-execution-rules.md)
-4. [ARD-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0005-failure-taxonomy-and-error-ux.md)
-5. [ARD-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0007-skill-json-single-source-and-md-generation.md)
+1. [ADR-0001-mvp-distribution-and-installation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0001-mvp-distribution-and-installation.md)
+2. [ADR-0003-skill-canonical-and-gui-meta-separation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0003-skill-canonical-and-gui-meta-separation.md) (Superseded)
+3. [ADR-0004-skill-canvas-minimum-execution-rules.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0004-skill-canvas-minimum-execution-rules.md)
+4. [ADR-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0005-failure-taxonomy-and-error-ux.md)
+5. [ADR-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0007-skill-json-single-source-and-md-generation.md)
 
 ## Options / Ideas (Non-MVP)
 

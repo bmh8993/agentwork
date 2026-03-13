@@ -1,4 +1,4 @@
-# ARD-XXXX: <Decision Title>
+# ADR-XXXX: <Decision Title>
 
 - Status: Proposed
 - Date: YYYY-MM-DD
@@ -50,8 +50,8 @@
 
 ## Related Decisions
 
-1. <연결된 ARD 링크 또는 번호>
-2. <후속 ARD 번호 또는 예정 항목>
+1. <연결된 ADR 링크 또는 번호>
+2. <후속 ADR 번호 또는 예정 항목>
 
 ## Status Transition Notes
 

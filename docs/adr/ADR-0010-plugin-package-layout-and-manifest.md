@@ -1,4 +1,4 @@
-# ARD-0010: Plugin 패키지 레이아웃과 매니페스트 규격
+# ADR-0010: Plugin 패키지 레이아웃과 매니페스트 규격
 
 - Status: Accepted
 - Date: 2026-03-12
@@ -35,7 +35,7 @@ MVP plugin 설치 채널별 입력 포맷과 패키지 레이아웃/매니페스
 
 1. `SKILL.json`이 있으면 canonical로 사용한다.
 2. `SKILL.md`만 있으면 `SKILL.md -> SKILL.json` 컴파일을 수행한다.
-3. 컴파일 결과는 `ARD-0009` 스키마 검증을 반드시 통과해야 한다.
+3. 컴파일 결과는 `ADR-0009` 스키마 검증을 반드시 통과해야 한다.
 4. 컴파일 실패 시 원본은 보존하고 `skill_compile_failed`를 기록한다.
 
 ## Security Policy (MVP)
@@ -85,11 +85,11 @@ MVP plugin 설치 채널별 입력 포맷과 패키지 레이아웃/매니페스
 
 ## Related Decisions
 
-1. [ARD-0016-mvp-plugin-install-channels-local-and-npm.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0016-mvp-plugin-install-channels-local-and-npm.md)
-2. [ARD-0002-domain-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0002-domain-model.md)
-3. [ARD-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0007-skill-json-single-source-and-md-generation.md)
-4. [ARD-0009-skill-json-v1-schema-and-acceptance-tests.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0009-skill-json-v1-schema-and-acceptance-tests.md)
-5. [ARD-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0005-failure-taxonomy-and-error-ux.md)
+1. [ADR-0016-mvp-plugin-install-channels-local-and-npm.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0016-mvp-plugin-install-channels-local-and-npm.md)
+2. [ADR-0002-domain-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0002-domain-model.md)
+3. [ADR-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0007-skill-json-single-source-and-md-generation.md)
+4. [ADR-0009-skill-json-v1-schema-and-acceptance-tests.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0009-skill-json-v1-schema-and-acceptance-tests.md)
+5. [ADR-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0005-failure-taxonomy-and-error-ux.md)
 
 ## Status Transition Notes
 

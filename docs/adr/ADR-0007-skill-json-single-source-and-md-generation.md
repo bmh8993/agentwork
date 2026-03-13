@@ -1,4 +1,4 @@
-# ARD-0007: SKILL.json 단일 SoT와 SKILL.md 생성 규칙
+# ADR-0007: SKILL.json 단일 SoT와 SKILL.md 생성 규칙
 
 - Status: Accepted
 - Date: 2026-03-12
@@ -6,7 +6,7 @@
 
 ## Context
 
-기존 결정(ARD-0003, ARD-0006)은 `SKILL.md`와 `SKILL-META.md` 2파일 분리 모델을 전제로 했다.
+기존 결정(ADR-0003, ADR-0006)은 `SKILL.md`와 `SKILL-META.md` 2파일 분리 모델을 전제로 했다.
 하지만 실제 운영 관점에서 2파일 동기화(누락, 충돌, 수동 수정, 레이아웃 유실) 복잡도가 높고, 사용자 혼란 가능성이 컸다.
 제품 목표는 비개발자에게 "화면에서 편집한 내용과 실제 실행 결과가 항상 일치"하는 경험을 제공하는 것이다.
 이를 위해 저장의 단일 진실 원천(Single Source of Truth, SoT)과 단방향 산출 규칙이 필요하다.
@@ -177,12 +177,12 @@ Skill 폴더의 기본 파일 세트는 아래로 고정한다.
 
 ## Related Decisions
 
-1. [ARD-0001-mvp-distribution-and-installation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0001-mvp-distribution-and-installation.md)
-2. [ARD-0002-domain-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0002-domain-model.md)
-3. [ARD-0004-skill-canvas-minimum-execution-rules.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0004-skill-canvas-minimum-execution-rules.md)
-4. [ARD-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0005-failure-taxonomy-and-error-ux.md)
-5. Supersedes: [ARD-0003-skill-canonical-and-gui-meta-separation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0003-skill-canonical-and-gui-meta-separation.md)
-6. Supersedes: [ARD-0006-skill-meta-minimum-schema.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0006-skill-meta-minimum-schema.md)
+1. [ADR-0001-mvp-distribution-and-installation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0001-mvp-distribution-and-installation.md)
+2. [ADR-0002-domain-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0002-domain-model.md)
+3. [ADR-0004-skill-canvas-minimum-execution-rules.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0004-skill-canvas-minimum-execution-rules.md)
+4. [ADR-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0005-failure-taxonomy-and-error-ux.md)
+5. Supersedes: [ADR-0003-skill-canonical-and-gui-meta-separation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0003-skill-canonical-and-gui-meta-separation.md)
+6. Supersedes: [ADR-0006-skill-meta-minimum-schema.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0006-skill-meta-minimum-schema.md)
 
 ## Status Transition Notes
 

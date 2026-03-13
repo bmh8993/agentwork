@@ -1,4 +1,14 @@
-# AGENTS.md
+# CLAUDE.md
+
+## Claude Code Memory Rules
+
+이 문서는 Claude Code가 로드하는 프로젝트 메모리 파일이다.
+
+1. 프로젝트 루트의 `CLAUDE.md`는 이 저장소 전체 기본 규칙으로 사용한다.
+2. 하위 디렉터리에 추가 `CLAUDE.md`가 있으면 더 구체적인 경로 규칙이 우선한다.
+3. 공통/개인 메모리(`~/.claude/CLAUDE.md`)보다 프로젝트 문서가 우선 적용된다.
+4. 작업 지시는 짧고 명시적으로 유지한다. 장문 설명/배경 지식은 참조 링크로 분리한다.
+5. 반복되는 빌드/테스트/검증 명령은 이 문서에 고정해 일관되게 재사용한다.
 
 ## Document Index (3 Categories)
 
