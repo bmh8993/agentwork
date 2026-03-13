@@ -17,7 +17,10 @@
     "test:ui-errors": "vitest run test-gates/ui-errors/index.test.ts",
     "build": "pnpm -r --filter './packages/**' build",
     "lint": "eslint . --ext .ts,.tsx",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "dev": "pnpm --filter '@opencode/renderer' dev",
+    "dev:electron": "pnpm --filter '@opencode/app' build && NODE_ENV=development pnpm --filter '@opencode/app' start",
+    "build:app": "pnpm --filter '@opencode/renderer' build && pnpm --filter '@opencode/app' build"
   },
   "keywords": ["opencode", "skill", "workflow", "agent"],
   "author": "",

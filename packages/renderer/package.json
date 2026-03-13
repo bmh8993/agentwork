@@ -1,0 +1,32 @@
+{
+  "name": "@opencode/renderer",
+  "version": "0.0.1",
+  "private": true,
+  "description": "OpenCode React UI",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .ts,.tsx"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.3.0",
+    "@opencode/skill-schema": "workspace:*",
+    "@opencode/skill-domain": "workspace:*",
+    "@opencode/skill-io": "workspace:*",
+    "@xyflow/react": "^12.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.49.0",
+    "zustand": "^4.5.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.12"
+  }
+}

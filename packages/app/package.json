@@ -1,0 +1,24 @@
+{
+  "name": "@opencode/app",
+  "version": "0.0.1",
+  "private": true,
+  "description": "OpenCode Electron Main Process",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "electron .",
+    "lint": "eslint . --ext .ts"
+  },
+  "dependencies": {
+    "@opencode/skill-schema": "workspace:*",
+    "@opencode/skill-domain": "workspace:*",
+    "@opencode/skill-io": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "electron": "^29.0.0",
+    "typescript": "^5.3.3"
+  }
+}
