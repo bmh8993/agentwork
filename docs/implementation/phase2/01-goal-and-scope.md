@@ -7,6 +7,23 @@
 
 `Start/Agent/End` 고정 모델 기준으로 워크플로우 편집 UX와 Publish 게이트를 완성한다.
 
+## Prerequisites
+
+**⚠️ IMPORTANT: Phase 1 완료 필독**
+
+Phase 2를 시작하기 전에 반드시 Phase 1 handoff 문서를 읽어야 합니다:
+
+- **필독:** `docs/implementation/phase1/04-handoff.md`
+
+**Phase 1에서 완료된 백엔드 구현:**
+- `validateDraft`, `validatePublish`, `validateRun` 함수
+- `checkAgentRequiredFields` - action_text, done_criteria 검증
+- `addReadOnlyCompatibilityFlags` - 비지원 노드 플래그
+- `saveSkill` - atomic write 포함
+- Error contract (`error_code`, `category`, `next_action`, `retryable`)
+
+**Phase 2에서는 위 백엔드를 UI에 연동하는 작업을 수행합니다.**
+
 ## Scope In
 
 1. 워크플로우 최소 노드 타입(`Start`, `Agent`, `End`) 편집 흐름 고정

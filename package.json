@@ -1,0 +1,40 @@
+{
+  "name": "opencode-workspace",
+  "version": "0.0.1",
+  "private": true,
+  "description": "OpenCode Skill Plugin Development Workspace",
+  "scripts": {
+    "test": "vitest",
+    "test:contract:schema": "vitest run test-gates/contract/schema.test.ts",
+    "test:contract:load": "vitest run test-gates/contract/load.test.ts",
+    "test:contract:draft": "vitest run test-gates/contract/draft.test.ts",
+    "test:contract:publish": "vitest run test-gates/contract/publish.test.ts",
+    "test:contract:run": "vitest run test-gates/contract/run.test.ts",
+    "test:contract": "pnpm run test:contract:schema && pnpm run test:contract:load && pnpm run test:contract:draft && pnpm run test:contract:publish && pnpm run test:contract:run",
+    "test:installer": "vitest run test-gates/installer/index.test.ts",
+    "test:installer:npm": "vitest run test-gates/installer/npm.test.ts",
+    "test:session-stream": "vitest run test-gates/session-stream/index.test.ts",
+    "test:ui-errors": "vitest run test-gates/ui-errors/index.test.ts",
+    "build": "pnpm -r --filter './packages/**' build",
+    "lint": "eslint . --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": ["opencode", "skill", "workflow", "agent"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.12",
+    "vitest": "^1.2.2"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.0"
+}

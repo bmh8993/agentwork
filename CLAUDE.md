@@ -44,7 +44,10 @@
 3. `docs/policy/POL-03-document-writing-rules.md`
 4. `docs/implementation/IMP-00-reference.md`
 5. `docs/implementation/IMP-01-blueprint.md`
-6. 해당 작업 대상 phase 문서 전체
+6. **이전 Phase 완료 확인 (Phase 2/3 시작 시 필독)**
+   - Phase 2 시작 전: `docs/implementation/phase1/04-handoff.md`
+   - Phase 3 시작 전: `docs/implementation/phase2/04-handoff.md`
+7. 해당 작업 대상 phase 문서 전체
    - `docs/implementation/phaseN/01-goal-and-scope.md`
    - `docs/implementation/phaseN/02-implementation.md`
    - `docs/implementation/phaseN/03-validation.md`
@@ -146,3 +149,21 @@ Phase 실행의 상세 규칙과 운영 원칙은 `docs/policy/POL-01-phase-work
 2. `How to verify` (요청자가 수행할 검증 절차)
 3. `Pass/Fail 기준` (완료 판정 기준)
 4. `Next 1 step` (다음 한 단계)
+
+## 8) 턴 크기(작업 분할) 규칙
+
+AI와 협업할 때는 "큰 계획 1개"가 아니라 "검증 가능한 작은 턴"으로 분할한다.
+
+1. 한 턴에는 검증 게이트 1개만 포함한다.
+2. 한 턴의 완료 기준은 테스트 명령 1~2개로 판정 가능해야 한다.
+3. 한 턴의 변경 범위는 가능하면 모듈 1개(최대 2개)로 제한한다.
+4. Open Question이 남아 있으면 구현 전에 질문/결정으로 턴을 분리한다.
+5. `phaseN/04-handoff.md`의 `Handoff Prompt`는 항상 다음 "단일 턴 작업"만 지시한다.
+
+권장 순서(Phase 1):
+
+1. `schema-contract`
+2. `load-compat-readonly`
+3. `draft-structural-save`
+4. `publish-gate-required-fields`
+5. `run-gate-strict`

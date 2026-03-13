@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "@opencode/skill-schema": ["./packages/skill-schema/src"],
+      "@opencode/skill-domain": ["./packages/skill-domain/src"],
+      "@opencode/skill-io": ["./packages/skill-io/src"]
+    }
+  },
+  "include": ["packages/*/src/**/*", "test-gates/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -1,0 +1,10 @@
+{
+  "version": "1",
+  "skill": {
+    "name": "Test Skill"
+  },
+  "workflow": {
+    "nodes": [],
+    "edges": []
+  }
+}

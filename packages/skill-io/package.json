@@ -1,0 +1,30 @@
+{
+  "name": "@opencode/skill-io",
+  "version": "0.0.1",
+  "private": true,
+  "description": "SKILL.json load/save operations with atomic write and backup",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@opencode/skill-schema": "workspace:*",
+    "@opencode/skill-domain": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2"
+  }
+}

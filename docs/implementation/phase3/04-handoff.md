@@ -3,6 +3,25 @@
 - Date: 2026-03-13
 - Status: Active
 
+## ⚠️ Phase 1-2 Completion Review
+
+**Phase 3를 시작하기 전에 먼저 읽어야 할 문서:**
+
+1. **`docs/implementation/phase1/04-handoff.md`** - 백엔드 검증 로직
+   - `validateRun` - 실행 전 strict 검증
+   - Error contract - 에러 코드 매핑
+
+2. **`docs/implementation/phase2/04-handoff.md`** - UI 연동 상태
+   - Agent 카드 필수 슬롯 완료 여부
+   - Draft/Publish 게이트 UX 완료 여부
+
+**완료하지 않으면 Phase 3 진행 불가:**
+- ✅ Phase 1: `run-gate-strict` 게이트 통과
+- ✅ Phase 2: Agent 카드 필수 슬롯 UX 동작
+- ✅ Phase 2: Draft/Publish 경계 확인
+
+---
+
 ## Handoff Prompt
 
 ```md

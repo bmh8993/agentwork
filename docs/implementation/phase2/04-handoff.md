@@ -3,6 +3,22 @@
 - Date: 2026-03-13
 - Status: Active
 
+## ⚠️ Phase 1 Completion Review
+
+**Phase 2를 시작하기 전에 먼저 읽어야 할 문서:**
+
+1. **`docs/implementation/phase1/04-handoff.md`** - Phase 1 완료 요약 및 Phase 2 handoff 내용
+   - Phase 1에서 구현된 백엔드 검증 로직 확인
+   - Phase 2를 위한 구체적인 구현 가이드
+   - 백엔드 validator 사용 예시
+
+**완료하지 않으면 Phase 2 진행 불가:**
+- ✅ Phase 1 필수 게이트 5개 통과 확인
+- ✅ `validateDraft`, `validatePublish` 함수 이해
+- ✅ Error contract 형식 이해
+
+---
+
 ## Handoff Prompt
 
 ```md

@@ -1,0 +1,11 @@
+{
+  "skill": {
+    "id": "test-skill",
+    "name": "Test Skill",
+    "description": "Missing version field"
+  },
+  "workflow": {
+    "nodes": [],
+    "edges": []
+  }
+}

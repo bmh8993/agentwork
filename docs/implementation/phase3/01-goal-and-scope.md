@@ -7,6 +7,27 @@
 
 설치(local folder + npm), 실행 게이트, 로그 보안(마스킹/보존), 산출물 생성(`SKILL.json -> SKILL.md`)을 통합해 MVP를 완료한다.
 
+## Prerequisites
+
+**⚠️ IMPORTANT: Phase 1 & Phase 2 완료 필독**
+
+Phase 3를 시작하기 전에 반드시 이전 Phase handoff 문서들을 읽어야 합니다:
+
+- **필독:** `docs/implementation/phase1/04-handoff.md` - 백엔드 검증 로직
+- **필독:** `docs/implementation/phase2/04-handoff.md` - UI 연동 상태
+
+**Phase 1-2에서 완료된 구현:**
+- 백엔드 validator (Load/Draft/Publish/Run)
+- Agent 카드 필수 슬롯 UX
+- Draft/Publish 게이트 연동
+- Read-only compatibility mode
+
+**Phase 3에서는 다음을 추가 구현:**
+- installer (local/npm)
+- run orchestrator strict gate
+- logging (masking/retention)
+- SKILL.json → SKILL.md generator
+
 ## Scope In
 
 1. installer 채널 구현(local folder + npm)

@@ -1,0 +1,167 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://opencode.ai/schemas/skill-v1.json",
+  "title": "SKILL.json v1",
+  "description": "Schema for SKILL.json version 1 - OpenCode Skill Plugin canonical format",
+  "type": "object",
+  "required": ["version", "skill", "workflow"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "1",
+      "description": "Schema version identifier"
+    },
+    "skill": {
+      "type": "object",
+      "required": ["id", "name", "description"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique skill identifier (kebab-case)"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable skill name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Skill description"
+        },
+        "content_md": {
+          "type": "string",
+          "description": "Markdown content for generated SKILL.md"
+        }
+      }
+    },
+    "workflow": {
+      "type": "object",
+      "required": ["nodes", "edges"],
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "description": "Workflow nodes",
+          "items": {
+            "$ref": "#/definitions/node"
+          }
+        },
+        "edges": {
+          "type": "array",
+          "description": "Workflow edges (connections between nodes)",
+          "items": {
+            "$ref": "#/definitions/edge"
+          }
+        },
+        "layout": {
+          "type": "object",
+          "description": "Canvas layout settings",
+          "properties": {
+            "grid_size": {
+              "type": "integer",
+              "description": "Grid size for snap-to-grid"
+            },
+            "snap_to_grid": {
+              "type": "boolean",
+              "description": "Whether snap-to-grid is enabled"
+            },
+            "viewport": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "description": "Viewport X offset"
+                },
+                "y": {
+                  "type": "number",
+                  "description": "Viewport Y offset"
+                },
+                "zoom": {
+                  "type": "number",
+                  "description": "Viewport zoom level"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "description": "Execution policy settings",
+      "properties": {
+        "execution_mode": {
+          "type": "string",
+          "enum": ["sequential", "parallel"],
+          "description": "How nodes are executed"
+        },
+        "failure_mode": {
+          "type": "string",
+          "enum": ["fail_fast", "continue", "best_effort"],
+          "description": "How failures are handled"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "node": {
+      "type": "object",
+      "required": ["id", "name", "type", "position"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique node identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable node name"
+        },
+        "type": {
+          "type": "string",
+          "description": "Node type (validation is domain-level, not schema-level)"
+        },
+        "position": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "Canvas position [x, y]"
+        },
+        "config": {
+          "type": "object",
+          "description": "Node-specific configuration"
+        }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "required": ["id", "source_node_id", "target_node_id", "branch"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique edge identifier"
+        },
+        "source_node_id": {
+          "type": "string",
+          "description": "Source node ID"
+        },
+        "target_node_id": {
+          "type": "string",
+          "description": "Target node ID"
+        },
+        "branch": {
+          "type": "string",
+          "description": "Branch condition (default, success, failure, etc.)"
+        },
+        "source_node_name": {
+          "type": "string",
+          "description": "Source node name (for display)"
+        },
+        "target_node_name": {
+          "type": "string",
+          "description": "Target node name (for display)"
+        }
+      }
+    }
+  }
+}
