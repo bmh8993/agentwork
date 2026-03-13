@@ -1,0 +1,51 @@
+{
+  "version": "1",
+  "skill": {
+    "id": "skill-003",
+    "name": "Unsupported Node Workflow",
+    "description": "Contains unsupported node type",
+    "content_md": "## What I do\n\nI have unsupported nodes."
+  },
+  "workflow": {
+    "nodes": [
+      {
+        "id": "n1",
+        "name": "Start",
+        "type": "Start",
+        "position": [100, 100],
+        "config": {}
+      },
+      {
+        "id": "n2",
+        "name": "Condition Node",
+        "type": "Condition",
+        "position": [300, 100],
+        "config": {}
+      },
+      {
+        "id": "n3",
+        "name": "End",
+        "type": "End",
+        "position": [500, 100],
+        "config": {}
+      }
+    ],
+    "edges": [
+      {
+        "id": "e1",
+        "source_node_id": "n1",
+        "target_node_id": "n2",
+        "branch": "default"
+      }
+    ],
+    "layout": {
+      "grid_size": 16,
+      "snap_to_grid": true,
+      "viewport": { "x": 0, "y": 0, "zoom": 1 }
+    }
+  },
+  "policy": {
+    "execution_mode": "sequential",
+    "failure_mode": "fail_fast"
+  }
+}

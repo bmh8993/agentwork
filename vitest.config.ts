@@ -7,6 +7,10 @@ export default defineConfig({
       '@opencode/skill-schema': path.resolve(__dirname, './packages/skill-schema/src'),
       '@opencode/skill-domain': path.resolve(__dirname, './packages/skill-domain/src'),
       '@opencode/skill-io': path.resolve(__dirname, './packages/skill-io/src'),
+      '@opencode/installer': path.resolve(__dirname, './packages/installer/src'),
+      '@opencode/run-orchestrator': path.resolve(__dirname, './packages/run-orchestrator/src'),
+      '@opencode/logging': path.resolve(__dirname, './packages/logging/src'),
+      '@opencode/generator': path.resolve(__dirname, './packages/generator/src'),
     }
   },
   test: {

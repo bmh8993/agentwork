@@ -1,0 +1,61 @@
+{
+  "version": "1",
+  "skill": {
+    "id": "skill-002",
+    "name": "Invalid Workflow",
+    "description": "Missing action_text",
+    "content_md": "## What I do\n\nI am invalid."
+  },
+  "workflow": {
+    "nodes": [
+      {
+        "id": "n1",
+        "name": "Start",
+        "type": "Start",
+        "position": [100, 100],
+        "config": {}
+      },
+      {
+        "id": "n2",
+        "name": "Agent Task",
+        "type": "Agent",
+        "position": [300, 100],
+        "config": {
+          "knowledge": "Test knowledge",
+          "tool": "Test tool",
+          "done_criteria": "Task is complete"
+        }
+      },
+      {
+        "id": "n3",
+        "name": "End",
+        "type": "End",
+        "position": [500, 100],
+        "config": {}
+      }
+    ],
+    "edges": [
+      {
+        "id": "e1",
+        "source_node_id": "n1",
+        "target_node_id": "n2",
+        "branch": "default"
+      },
+      {
+        "id": "e2",
+        "source_node_id": "n2",
+        "target_node_id": "n3",
+        "branch": "default"
+      }
+    ],
+    "layout": {
+      "grid_size": 16,
+      "snap_to_grid": true,
+      "viewport": { "x": 0, "y": 0, "zoom": 1 }
+    }
+  },
+  "policy": {
+    "execution_mode": "sequential",
+    "failure_mode": "fail_fast"
+  }
+}

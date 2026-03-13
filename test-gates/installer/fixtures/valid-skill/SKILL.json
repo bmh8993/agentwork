@@ -1,0 +1,66 @@
+{
+  "version": "1",
+  "skill": {
+    "id": "skill-001",
+    "name": "Test Skill",
+    "description": "A valid test skill",
+    "content_md": "## What I do\n\nI am a test skill."
+  },
+  "workflow": {
+    "nodes": [
+      {
+        "id": "n1",
+        "name": "Start",
+        "type": "Start",
+        "position": [100, 100],
+        "config": {}
+      },
+      {
+        "id": "n2",
+        "name": "Agent Task",
+        "type": "Agent",
+        "position": [300, 100],
+        "config": {
+          "knowledge": "Test knowledge",
+          "tool": "Test tool",
+          "action_text": "Do something",
+          "done_criteria": "Task is complete"
+        }
+      },
+      {
+        "id": "n3",
+        "name": "End",
+        "type": "End",
+        "position": [500, 100],
+        "config": {}
+      }
+    ],
+    "edges": [
+      {
+        "id": "e1",
+        "source_node_id": "n1",
+        "target_node_id": "n2",
+        "branch": "default",
+        "source_node_name": "Start",
+        "target_node_name": "Agent Task"
+      },
+      {
+        "id": "e2",
+        "source_node_id": "n2",
+        "target_node_id": "n3",
+        "branch": "default",
+        "source_node_name": "Agent Task",
+        "target_node_name": "End"
+      }
+    ],
+    "layout": {
+      "grid_size": 16,
+      "snap_to_grid": true,
+      "viewport": { "x": 0, "y": 0, "zoom": 1 }
+    }
+  },
+  "policy": {
+    "execution_mode": "sequential",
+    "failure_mode": "fail_fast"
+  }
+}

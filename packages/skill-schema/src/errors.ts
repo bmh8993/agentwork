@@ -13,8 +13,9 @@ export const ERROR_CATEGORIES = {
 
 export type ErrorCategory = (typeof ERROR_CATEGORIES)[keyof typeof ERROR_CATEGORIES]
 
-// Error codes for Phase 1 (Validation focus)
+// Error codes for Phase 1-3
 export const ERROR_CODES = {
+  // Phase 1: Validation
   MISSING_VERSION: 'missing_version',
   INVALID_VERSION_TYPE: 'invalid_version_type',
   UNSUPPORTED_VERSION: 'unsupported_version',
@@ -24,6 +25,12 @@ export const ERROR_CODES = {
   PUBLISH_REQUIRED_FIELD_MISSING: 'publish_required_field_missing',
   PUBLISH_VALIDATION_FAILED: 'publish_validation_failed',
   RUN_VALIDATION_FAILED: 'run_validation_failed',
+  // Phase 3: Installer & Logging
+  MISSING_REQUIRED_FILE: 'missing_required_file',
+  INVALID_PACKAGE_LAYOUT: 'invalid_package_layout',
+  UNSUPPORTED_SOURCE: 'unsupported_source',
+  SKILL_COMPILE_FAILED: 'skill_compile_failed',
+  DEPENDENCY_RESOLUTION_FAILED: 'dependency_resolution_failed',
 } as const
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES]
@@ -123,6 +130,47 @@ export const ERROR_CATALOG: Record<ErrorCode, Omit<ValidationError, 'path'>> = {
     message_user: 'Pre-run validation failed.',
     next_action: 'Resolve validation errors and run again.',
     retryable: false,
+  },
+  // Phase 3: Installer errors
+  [ERROR_CODES.MISSING_REQUIRED_FILE]: {
+    code: ERROR_CODES.MISSING_REQUIRED_FILE,
+    category: ERROR_CATEGORIES.InstallError,
+    trigger_stage: TRIGGER_STAGES.INSTALL,
+    message_user: 'Required file is missing.',
+    next_action: 'Include `SKILL.json` as canonical input (`SKILL.md` only is not install input).',
+    retryable: false,
+  },
+  [ERROR_CODES.INVALID_PACKAGE_LAYOUT]: {
+    code: ERROR_CODES.INVALID_PACKAGE_LAYOUT,
+    category: ERROR_CATEGORIES.InstallError,
+    trigger_stage: TRIGGER_STAGES.INSTALL,
+    message_user: 'Package layout is invalid.',
+    next_action: 'Fix package layout to match the spec.',
+    retryable: false,
+  },
+  [ERROR_CODES.UNSUPPORTED_SOURCE]: {
+    code: ERROR_CODES.UNSUPPORTED_SOURCE,
+    category: ERROR_CATEGORIES.InstallError,
+    trigger_stage: TRIGGER_STAGES.INSTALL,
+    message_user: 'Unsupported install source.',
+    next_action: 'Use local folder or npm source only.',
+    retryable: false,
+  },
+  [ERROR_CODES.SKILL_COMPILE_FAILED]: {
+    code: ERROR_CODES.SKILL_COMPILE_FAILED,
+    category: ERROR_CATEGORIES.InstallError,
+    trigger_stage: TRIGGER_STAGES.INSTALL,
+    message_user: '`SKILL.md` compilation failed.',
+    next_action: 'Fix skill content and retry install.',
+    retryable: false,
+  },
+  [ERROR_CODES.DEPENDENCY_RESOLUTION_FAILED]: {
+    code: ERROR_CODES.DEPENDENCY_RESOLUTION_FAILED,
+    category: ERROR_CATEGORIES.InstallError,
+    trigger_stage: TRIGGER_STAGES.INSTALL,
+    message_user: 'Dependency resolution failed.',
+    next_action: 'Check package versions and network, then retry.',
+    retryable: true,
   },
 }
 
