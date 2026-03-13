@@ -1,4 +1,4 @@
-# ARD-0005: 실패 분류 체계와 에러 UX 표준 (MVP)
+# ADR-0005: 실패 분류 체계와 에러 UX 표준 (MVP)
 
 - Status: Accepted
 - Date: 2026-03-12
@@ -94,12 +94,12 @@ MVP 에러 처리는 `error_code + category + next_action` 3축으로 고정한�
 
 ## Related Decisions
 
-1. [ARD-0001-mvp-distribution-and-installation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0001-mvp-distribution-and-installation.md)
-2. [ARD-0002-domain-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0002-domain-model.md)
-3. [ARD-0003-skill-canonical-and-gui-meta-separation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0003-skill-canonical-and-gui-meta-separation.md) (Superseded)
-4. [ARD-0004-skill-canvas-minimum-execution-rules.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0004-skill-canvas-minimum-execution-rules.md)
-5. [ARD-0006-skill-meta-minimum-schema.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0006-skill-meta-minimum-schema.md) (Superseded)
-6. [ARD-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0007-skill-json-single-source-and-md-generation.md)
+1. [ADR-0001-mvp-distribution-and-installation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0001-mvp-distribution-and-installation.md)
+2. [ADR-0002-domain-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0002-domain-model.md)
+3. [ADR-0003-skill-canonical-and-gui-meta-separation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0003-skill-canonical-and-gui-meta-separation.md) (Superseded)
+4. [ADR-0004-skill-canvas-minimum-execution-rules.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0004-skill-canvas-minimum-execution-rules.md)
+5. [ADR-0006-skill-meta-minimum-schema.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0006-skill-meta-minimum-schema.md) (Superseded)
+6. [ADR-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0007-skill-json-single-source-and-md-generation.md)
 
 ## Options / Ideas (Non-MVP)
 

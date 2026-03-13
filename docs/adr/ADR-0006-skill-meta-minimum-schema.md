@@ -1,4 +1,4 @@
-# ARD-0006: SKILL-META.md 최소 스키마와 좌표 규칙 (MVP)
+# ADR-0006: SKILL-META.md 최소 스키마와 좌표 규칙 (MVP)
 
 - Status: Superseded
 - Date: 2026-03-12
@@ -6,11 +6,11 @@
 
 ## Context
 
-ARD-0003에서 `SKILL.md`(canonical)와 `SKILL-META.md`(GUI 메타) 분리를 확정했다.
+ADR-0003에서 `SKILL.md`(canonical)와 `SKILL-META.md`(GUI 메타) 분리를 확정했다.
 이제 캔버스 노드/엣지와 좌표를 어떤 스키마로 저장할지 고정해야 구현이 가능하다.
 또한 좌표 규칙은 직관적이고 재현 가능해야 하므로 검증된 워크플로우 에디터 패턴을 참고할 필요가 있다.
 
-본 결정은 ARD-0007에서 `SKILL-META.md` 비사용 및 `SKILL.json` 단일 SoT 정책으로 대체되었다.
+본 결정은 ADR-0007에서 `SKILL-META.md` 비사용 및 `SKILL.json` 단일 SoT 정책으로 대체되었다.
 
 ## Decision
 
@@ -90,10 +90,10 @@ graph:
 
 ## Related Decisions
 
-1. [ARD-0003-skill-canonical-and-gui-meta-separation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0003-skill-canonical-and-gui-meta-separation.md)
-2. [ARD-0004-skill-canvas-minimum-execution-rules.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0004-skill-canvas-minimum-execution-rules.md)
-3. [ARD-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0005-failure-taxonomy-and-error-ux.md)
-4. Superseded by: [ARD-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0007-skill-json-single-source-and-md-generation.md)
+1. [ADR-0003-skill-canonical-and-gui-meta-separation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0003-skill-canonical-and-gui-meta-separation.md)
+2. [ADR-0004-skill-canvas-minimum-execution-rules.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0004-skill-canvas-minimum-execution-rules.md)
+3. [ADR-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0005-failure-taxonomy-and-error-ux.md)
+4. Superseded by: [ADR-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0007-skill-json-single-source-and-md-generation.md)
 
 ## References
 

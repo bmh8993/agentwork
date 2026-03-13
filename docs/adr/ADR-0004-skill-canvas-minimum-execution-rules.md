@@ -1,4 +1,4 @@
-# ARD-0004: Skill 캔버스 최소 실행 규칙 (MVP)
+# ADR-0004: Skill 캔버스 최소 실행 규칙 (MVP)
 
 - Status: Superseded
 - Date: 2026-03-12
@@ -9,7 +9,7 @@
 Skill은 여러 Agent의 동작 방식을 결정하는 워크플로우다.
 병렬 실행까지 포함하면 표현력은 높아지지만, 비개발자 대상 MVP에서는 설계/디버깅 복잡도가 급격히 증가한다.
 MVP 목표는 "GUI로 Skill을 만들고 실행 성공을 경험"하는 검증이다.
-본 결정의 노드 타입/분기 정책은 ARD-0018에서 대체되었다.
+본 결정의 노드 타입/분기 정책은 ADR-0018에서 대체되었다.
 
 ## Decision
 
@@ -58,12 +58,12 @@ MVP Skill 실행 규칙을 아래로 고정한다.
 
 ## Related Decisions
 
-1. [ARD-0001-mvp-distribution-and-installation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0001-mvp-distribution-and-installation.md)
-2. [ARD-0002-domain-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0002-domain-model.md)
-3. [ARD-0003-skill-canonical-and-gui-meta-separation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0003-skill-canonical-and-gui-meta-separation.md) (Superseded)
-4. [ARD-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0005-failure-taxonomy-and-error-ux.md)
-5. [ARD-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0007-skill-json-single-source-and-md-generation.md)
-6. Superseded by: [ARD-0018-action-only-workflow-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0018-action-only-workflow-model.md)
+1. [ADR-0001-mvp-distribution-and-installation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0001-mvp-distribution-and-installation.md)
+2. [ADR-0002-domain-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0002-domain-model.md)
+3. [ADR-0003-skill-canonical-and-gui-meta-separation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0003-skill-canonical-and-gui-meta-separation.md) (Superseded)
+4. [ADR-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0005-failure-taxonomy-and-error-ux.md)
+5. [ADR-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0007-skill-json-single-source-and-md-generation.md)
+6. Superseded by: [ADR-0018-action-only-workflow-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0018-action-only-workflow-model.md)
 
 ## Options / Ideas (Non-MVP)
 

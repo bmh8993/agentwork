@@ -1,4 +1,4 @@
-# ARD-0001: MVP 배포/설치/실행 경계 정의
+# ADR-0001: MVP 배포/설치/실행 경계 정의
 
 - Status: Superseded
 - Date: 2026-03-12
@@ -8,7 +8,7 @@
 
 초기 논의에서 "OpenCode 기반 GUI" 제품의 설치 소스와 실행 범위를 어디까지 둘지 선택이 필요했다.
 특히 비개발자 대상 MVP에서는 마켓플레이스 연동보다 단순하고 실패율이 낮은 경로가 우선이다.
-본 결정의 설치 채널 정책은 ARD-0016에서 대체되었다.
+본 결정의 설치 채널 정책은 ADR-0016에서 대체되었다.
 
 ## Decision
 
@@ -58,11 +58,11 @@ MVP는 아래 4가지를 고정한다.
 
 연결된 결정:
 
-1. [ARD-0002-domain-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0002-domain-model.md)
-2. [ARD-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0007-skill-json-single-source-and-md-generation.md)
+1. [ADR-0002-domain-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0002-domain-model.md)
+2. [ADR-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0007-skill-json-single-source-and-md-generation.md)
 
 연결된 후속 결정:
 
-1. [ARD-0004-skill-canvas-minimum-execution-rules.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0004-skill-canvas-minimum-execution-rules.md)
-2. [ARD-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0005-failure-taxonomy-and-error-ux.md)
-3. Superseded by: [ARD-0016-mvp-plugin-install-channels-local-and-npm.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0016-mvp-plugin-install-channels-local-and-npm.md)
+1. [ADR-0004-skill-canvas-minimum-execution-rules.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0004-skill-canvas-minimum-execution-rules.md)
+2. [ADR-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0005-failure-taxonomy-and-error-ux.md)
+3. Superseded by: [ADR-0016-mvp-plugin-install-channels-local-and-npm.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0016-mvp-plugin-install-channels-local-and-npm.md)

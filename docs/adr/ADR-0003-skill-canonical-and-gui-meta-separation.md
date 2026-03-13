@@ -1,4 +1,4 @@
-# ARD-0003: Skill Canonical 문서와 GUI 메타 분리
+# ADR-0003: Skill Canonical 문서와 GUI 메타 분리
 
 - Status: Superseded
 - Date: 2026-03-12
@@ -10,7 +10,7 @@
 동시에 OpenCode 호환성을 유지하려면 Skill 저장 포맷은 OpenCode가 이해하는 `SKILL.md`를 우선해야 한다.
 문제는 GUI 편집 상태(좌표, 노드 ID, 엣지 정보 등)는 OpenCode 표준 Skill 본문과 성격이 다르다는 점이다.
 
-본 결정은 ARD-0007에서 `SKILL.json` 단일 SoT 정책으로 대체되었다.
+본 결정은 ADR-0007에서 `SKILL.json` 단일 SoT 정책으로 대체되었다.
 
 ## Decision
 
@@ -60,10 +60,10 @@ Skill 저장 구조를 아래처럼 2파일로 분리한다.
 
 ## Related Decisions
 
-1. [ARD-0001-mvp-distribution-and-installation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0001-mvp-distribution-and-installation.md)
-2. [ARD-0002-domain-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0002-domain-model.md)
-3. [ARD-0004-skill-canvas-minimum-execution-rules.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0004-skill-canvas-minimum-execution-rules.md)
-4. Superseded by: [ARD-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0007-skill-json-single-source-and-md-generation.md)
+1. [ADR-0001-mvp-distribution-and-installation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0001-mvp-distribution-and-installation.md)
+2. [ADR-0002-domain-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0002-domain-model.md)
+3. [ADR-0004-skill-canvas-minimum-execution-rules.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0004-skill-canvas-minimum-execution-rules.md)
+4. Superseded by: [ADR-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0007-skill-json-single-source-and-md-generation.md)
 
 ## Status Transition Notes
 

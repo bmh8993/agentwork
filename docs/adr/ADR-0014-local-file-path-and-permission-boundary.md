@@ -1,4 +1,4 @@
-# ARD-0014: 로컬 파일 경로와 권한 경계 정책
+# ADR-0014: 로컬 파일 경로와 권한 경계 정책
 
 - Status: Accepted
 - Date: 2026-03-12
@@ -58,6 +58,6 @@ MVP 경계 정책을 아래와 같이 고정한다.
 
 ## Related Decisions
 
-1. [ARD-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0005-failure-taxonomy-and-error-ux.md)
-2. [ARD-0012-skillrun-log-retention-and-masking-policy.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0012-skillrun-log-retention-and-masking-policy.md)
-3. [ARD-0017-agent-card-ux-and-chat-refinement.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0017-agent-card-ux-and-chat-refinement.md)
+1. [ADR-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0005-failure-taxonomy-and-error-ux.md)
+2. [ADR-0012-skillrun-log-retention-and-masking-policy.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0012-skillrun-log-retention-and-masking-policy.md)
+3. [ADR-0017-agent-card-ux-and-chat-refinement.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0017-agent-card-ux-and-chat-refinement.md)

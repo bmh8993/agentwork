@@ -1,4 +1,4 @@
-# ARD-0016: MVP 플러그인 설치 채널(Local + npm) 지원
+# ADR-0016: MVP 플러그인 설치 채널(Local + npm) 지원
 
 - Status: Accepted
 - Date: 2026-03-12
@@ -56,9 +56,9 @@ Marketplace 연동은 계속 제외한다.
 
 ## Related Decisions
 
-1. [ARD-0001-mvp-distribution-and-installation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0001-mvp-distribution-and-installation.md) (Superseded)
-2. [ARD-0010-plugin-package-layout-and-manifest.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0010-plugin-package-layout-and-manifest.md)
-3. [ARD-0002-domain-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0002-domain-model.md)
+1. [ADR-0001-mvp-distribution-and-installation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0001-mvp-distribution-and-installation.md) (Superseded)
+2. [ADR-0010-plugin-package-layout-and-manifest.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0010-plugin-package-layout-and-manifest.md)
+3. [ADR-0002-domain-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0002-domain-model.md)
 
 ## References
 

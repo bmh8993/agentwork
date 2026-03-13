@@ -1,4 +1,4 @@
-# ARD-0009: SKILL.json v1 스키마와 수용 테스트 기준
+# ADR-0009: SKILL.json v1 스키마와 수용 테스트 기준
 
 - Status: Accepted
 - Date: 2026-03-12
@@ -6,7 +6,7 @@
 
 ## Context
 
-ARD-0008은 버전/마이그레이션 정책을 고정했다.
+ADR-0008은 버전/마이그레이션 정책을 고정했다.
 이 정책을 구현하려면 `SKILL.json` v1의 필드 제약과 테스트 기준이 필요하다.
 기준이 없으면 구현 채널마다 검증 결과가 달라질 수 있다.
 
@@ -98,8 +98,8 @@ MVP에서 `SKILL.json` v1의 JSON Schema와 수용 테스트 세트를 고정한
 
 ## Related Decisions
 
-1. [ARD-0008-skill-json-schema-versioning-and-migration-policy.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0008-skill-json-schema-versioning-and-migration-policy.md)
-2. [ARD-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0007-skill-json-single-source-and-md-generation.md)
+1. [ADR-0008-skill-json-schema-versioning-and-migration-policy.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0008-skill-json-schema-versioning-and-migration-policy.md)
+2. [ADR-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0007-skill-json-single-source-and-md-generation.md)
 
 ## References
 

@@ -1,4 +1,4 @@
-# ARD-0008: SKILL.json 스키마 버전/호환/마이그레이션 정책
+# ADR-0008: SKILL.json 스키마 버전/호환/마이그레이션 정책
 
 - Status: Accepted
 - Date: 2026-03-12
@@ -6,7 +6,7 @@
 
 ## Context
 
-ARD-0007에서 `SKILL.json`을 단일 SoT로 고정했다.
+ADR-0007에서 `SKILL.json`을 단일 SoT로 고정했다.
 단일 SoT 운영에는 버전 식별, 호환성 경계, 마이그레이션 규칙이 필요하다.
 버전 규칙이 없으면 import 실패, 런타임 불일치, 복구 불가능한 저장 오류가 발생한다.
 MVP는 복잡한 자동 병합보다 예측 가능한 변환 경로와 명확한 실패 처리를 우선한다.
@@ -88,14 +88,14 @@ MVP에서 `SKILL.json`은 명시적 버전 필드 기반으로 검증하고, 앱
 1. 다중 버전 동시 실행(runtime polyfill)
 2. 양방향/자동 병합형 마이그레이션
 3. 클라우드 협업 환경의 동시 편집 충돌 해결
-4. JSON Schema 상세 필드 정의와 테스트 케이스 카탈로그(후속 ARD에서 확정)
+4. JSON Schema 상세 필드 정의와 테스트 케이스 카탈로그(후속 ADR에서 확정)
 
 ## Related Decisions
 
-1. [ARD-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0007-skill-json-single-source-and-md-generation.md)
-2. [ARD-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0005-failure-taxonomy-and-error-ux.md)
-3. [ARD-0002-domain-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0002-domain-model.md)
-4. Follow-up: ARD-0009 (JSON Schema 상세/수용 테스트 기준)
+1. [ADR-0007-skill-json-single-source-and-md-generation.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0007-skill-json-single-source-and-md-generation.md)
+2. [ADR-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0005-failure-taxonomy-and-error-ux.md)
+3. [ADR-0002-domain-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0002-domain-model.md)
+4. Follow-up: ADR-0009 (JSON Schema 상세/수용 테스트 기준)
 
 ## Status Transition Notes
 

@@ -1,4 +1,4 @@
-# ARD-0011: 내부 Condition 표현식 평가 정책 (UI 비노출)
+# ADR-0011: 내부 Condition 표현식 평가 정책 (UI 비노출)
 
 - Status: Superseded
 - Date: 2026-03-12
@@ -9,7 +9,7 @@
 MVP 빌더 UX는 Agent 카드 중심으로 단순화하는 방향을 채택했다.
 사용자에게 Condition 노드를 직접 노출하지 않더라도, 실행 엔진에는 분기 평가 규칙이 필요하다고 보았다.
 하지만 이후 합의에서 MVP는 Agent 카드 기반 구체화 플로우를 우선하고, 독립적인 Condition 표현식 정책을 별도 범위로 다루지 않기로 했다.
-본 문서는 ARD-0018의 Action 텍스트 중심 모델로 대체된다.
+본 문서는 ADR-0018의 Action 텍스트 중심 모델로 대체된다.
 
 ## Decision
 
@@ -34,7 +34,7 @@ MVP 엔진은 내부 분기 평가에 제한된 Condition 표현식 정책을 �
 ## Boundary with UX
 
 1. 본 문서는 엔진 평가 규칙을 다룬다.
-2. 빌더 상호작용(Agent 카드, 채팅 구체화)은 ARD-0017에서 다룬다.
+2. 빌더 상호작용(Agent 카드, 채팅 구체화)은 ADR-0017에서 다룬다.
 3. UI가 입력한 텍스트/폼 조건은 본 정책의 구조화 규칙으로 컴파일되어야 한다.
 
 ## Rationale
@@ -66,14 +66,14 @@ MVP 엔진은 내부 분기 평가에 제한된 Condition 표현식 정책을 �
 
 1. 사용자 정의 함수/스크립트 실행
 2. 외부 API 기반 동적 조건
-3. 빌더 UI 노출 방식 정의(ARD-0017에서 관리)
+3. 빌더 UI 노출 방식 정의(ADR-0017에서 관리)
 
 ## Related Decisions
 
-1. [ARD-0004-skill-canvas-minimum-execution-rules.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0004-skill-canvas-minimum-execution-rules.md)
-2. [ARD-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0005-failure-taxonomy-and-error-ux.md)
-3. [ARD-0017-agent-card-ux-and-chat-refinement.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0017-agent-card-ux-and-chat-refinement.md)
-4. Superseded by: [ARD-0018-action-only-workflow-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/ard/ARD-0018-action-only-workflow-model.md)
+1. [ADR-0004-skill-canvas-minimum-execution-rules.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0004-skill-canvas-minimum-execution-rules.md)
+2. [ADR-0005-failure-taxonomy-and-error-ux.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0005-failure-taxonomy-and-error-ux.md)
+3. [ADR-0017-agent-card-ux-and-chat-refinement.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0017-agent-card-ux-and-chat-refinement.md)
+4. Superseded by: [ADR-0018-action-only-workflow-model.md](/Users/zayden.ok/Desktop/dev-others/agent-work/docs/adr/ADR-0018-action-only-workflow-model.md)
 
 ## Status Transition Notes
 
