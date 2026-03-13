@@ -20,7 +20,11 @@
     "paths": {
       "@opencode/skill-schema": ["./packages/skill-schema/src"],
       "@opencode/skill-domain": ["./packages/skill-domain/src"],
-      "@opencode/skill-io": ["./packages/skill-io/src"]
+      "@opencode/skill-io": ["./packages/skill-io/src"],
+      "@opencode/installer": ["./packages/installer/src"],
+      "@opencode/run-orchestrator": ["./packages/run-orchestrator/src"],
+      "@opencode/logging": ["./packages/logging/src"],
+      "@opencode/generator": ["./packages/generator/src"]
     }
   },
   "include": ["packages/*/src/**/*", "test-gates/**/*"],

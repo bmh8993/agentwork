@@ -7,7 +7,6 @@
 
 import { useCallback } from 'react';
 import { useWorkflowStore } from '../store/workflowStore';
-import type { NodeData } from '../types/workflow';
 
 const NODE_TEMPLATES: Array<{
   type: 'Start' | 'Agent' | 'End';

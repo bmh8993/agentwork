@@ -4,10 +4,12 @@
  * Entry point node for workflow.
  */
 
-import { Handle, Position, NodeProps } from '@xyflow/react';
+import { Handle, Position, type NodeProps } from '@xyflow/react';
 import type { NodeData } from '../../types/workflow';
 
-export function StartNode({ data }: NodeProps<NodeData>) {
+export function StartNode({ data }: NodeProps) {
+  const nodeData = data as NodeData;
+
   return (
     <div
       style={{
@@ -23,7 +25,7 @@ export function StartNode({ data }: NodeProps<NodeData>) {
       }}
     >
       <Handle type="source" position={Position.Bottom} style={{ background: '#10b981' }} />
-      <div>🚀 {data.name || 'Start'}</div>
+      <div>🚀 {nodeData.name || 'Start'}</div>
     </div>
   );
 }

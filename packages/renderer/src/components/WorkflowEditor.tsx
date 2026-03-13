@@ -57,7 +57,7 @@ export function WorkflowEditor() {
       )}
 
       {/* Agent Card Editor Modal */}
-      {selectedNode && selectedNode.type === 'agent' && (
+      {selectedNode && selectedNode.type === 'Agent' && (
         <AgentCardEditor node={selectedNode} onClose={() => setSelectedNodeId(null)} />
       )}
     </div>

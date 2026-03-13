@@ -4,10 +4,12 @@
  * Terminal node for workflow.
  */
 
-import { Handle, Position, NodeProps } from '@xyflow/react';
+import { Handle, Position, type NodeProps } from '@xyflow/react';
 import type { NodeData } from '../../types/workflow';
 
-export function EndNode({ data }: NodeProps<NodeData>) {
+export function EndNode({ data }: NodeProps) {
+  const nodeData = data as NodeData;
+
   return (
     <div
       style={{
@@ -23,7 +25,7 @@ export function EndNode({ data }: NodeProps<NodeData>) {
       }}
     >
       <Handle type="target" position={Position.Top} style={{ background: '#ef4444' }} />
-      <div>🏁 {data.name || 'End'}</div>
+      <div>🏁 {nodeData.name || 'End'}</div>
     </div>
   );
 }

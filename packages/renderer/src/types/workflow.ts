@@ -16,6 +16,7 @@ export type NodeType = 'Start' | 'Agent' | 'End';
  * Node data structure (aligned with v1 schema)
  */
 export interface NodeData {
+  [key: string]: unknown;
   id: string;
   name: string;  // v1 schema: "name" (was "label" in UI-only version)
   type: NodeType;

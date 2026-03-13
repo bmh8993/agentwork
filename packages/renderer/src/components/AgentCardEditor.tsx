@@ -38,7 +38,7 @@ export function AgentCardEditor({ node, onClose }: AgentCardEditorProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors, isDirty },
+    formState: { errors },
   } = useForm<AgentCardFormData>({
     resolver: zodResolver(agentCardSchema),
     defaultValues: {

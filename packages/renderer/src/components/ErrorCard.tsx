@@ -86,7 +86,7 @@ export function ErrorCard({ errors, onDismiss }: ErrorCardProps) {
                 marginBottom: '4px',
               }}
             >
-              {error.error_code}
+              {error.code}
             </div>
 
             {/* Message */}

@@ -11,6 +11,12 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@opencode/skill-schema": ["../skill-schema/src"],
+      "@opencode/skill-domain": ["../skill-domain/src"],
+      "@opencode/skill-io": ["../skill-io/src"]
+    },
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

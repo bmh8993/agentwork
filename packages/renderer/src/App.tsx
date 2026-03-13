@@ -43,7 +43,7 @@ function App() {
       setNotification({
         type: 'warning',
         errors: [],
-        warnings: result.warnings.map((w) => w.message || String(w)),
+        warnings: result.warnings,
         message: 'Draft saved with warnings',
       });
     } else {

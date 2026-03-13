@@ -25,7 +25,9 @@ describe('install-folder-only', () => {
     it('should accept relative path starting with ./', () => {
       const source = detectInstallSource('./my-skill')
       expect(source.type).toBe('local-folder')
-      expect(source.path).toBe('./my-skill')
+      if (source.type === 'local-folder') {
+        expect(source.path).toBe('./my-skill')
+      }
 
       const errors = validateInstallSource(source)
       expect(errors).toHaveLength(0)
@@ -34,7 +36,9 @@ describe('install-folder-only', () => {
     it('should accept relative path starting with ../', () => {
       const source = detectInstallSource('../my-skill')
       expect(source.type).toBe('local-folder')
-      expect(source.path).toBe('../my-skill')
+      if (source.type === 'local-folder') {
+        expect(source.path).toBe('../my-skill')
+      }
 
       const errors = validateInstallSource(source)
       expect(errors).toHaveLength(0)
@@ -43,7 +47,9 @@ describe('install-folder-only', () => {
     it('should accept absolute path starting with /', () => {
       const source = detectInstallSource('/path/to/skill')
       expect(source.type).toBe('local-folder')
-      expect(source.path).toBe('/path/to/skill')
+      if (source.type === 'local-folder') {
+        expect(source.path).toBe('/path/to/skill')
+      }
 
       const errors = validateInstallSource(source)
       expect(errors).toHaveLength(0)
@@ -62,7 +68,9 @@ describe('install-folder-only', () => {
     it('should accept scoped npm package @scope/name', () => {
       const source = detectInstallSource('@opencode/my-skill')
       expect(source.type).toBe('npm')
-      expect(source.packageName).toBe('@opencode/my-skill')
+      if (source.type === 'npm') {
+        expect(source.packageName).toBe('@opencode/my-skill')
+      }
 
       const errors = validateInstallSource(source)
       expect(errors).toHaveLength(0)
@@ -71,7 +79,9 @@ describe('install-folder-only', () => {
     it('should accept npm package with version @scope/name@1.0.0', () => {
       const source = detectInstallSource('@opencode/my-skill@1.0.0')
       expect(source.type).toBe('npm')
-      expect(source.packageName).toBe('@opencode/my-skill@1.0.0')
+      if (source.type === 'npm') {
+        expect(source.packageName).toBe('@opencode/my-skill@1.0.0')
+      }
 
       const errors = validateInstallSource(source)
       expect(errors).toHaveLength(0)
@@ -80,7 +90,9 @@ describe('install-folder-only', () => {
     it('should accept simple npm package name with version', () => {
       const source = detectInstallSource('my-skill@1.0.0')
       expect(source.type).toBe('npm')
-      expect(source.packageName).toBe('my-skill@1.0.0')
+      if (source.type === 'npm') {
+        expect(source.packageName).toBe('my-skill@1.0.0')
+      }
 
       const errors = validateInstallSource(source)
       expect(errors).toHaveLength(0)
@@ -89,7 +101,9 @@ describe('install-folder-only', () => {
     it('should treat simple name without path separator as local folder', () => {
       const source = detectInstallSource('my-skill')
       expect(source.type).toBe('local-folder')
-      expect(source.path).toBe('my-skill')
+      if (source.type === 'local-folder') {
+        expect(source.path).toBe('my-skill')
+      }
 
       const errors = validateInstallSource(source)
       expect(errors).toHaveLength(0)
@@ -98,7 +112,9 @@ describe('install-folder-only', () => {
     it('should accept npm package with version name@1.0.0', () => {
       const source = detectInstallSource('my-skill@1.0.0')
       expect(source.type).toBe('npm')
-      expect(source.packageName).toBe('my-skill@1.0.0')
+      if (source.type === 'npm') {
+        expect(source.packageName).toBe('my-skill@1.0.0')
+      }
 
       const errors = validateInstallSource(source)
       expect(errors).toHaveLength(0)

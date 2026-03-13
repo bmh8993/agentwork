@@ -4,7 +4,7 @@
  * Domain validation rules for SKILL.json
  */
 
-import type { ValidationResult, ValidationFlags } from '@opencode/skill-schema'
+import type { ValidationResult } from '@opencode/skill-schema'
 import { createError, ERROR_CODES } from '@opencode/skill-schema'
 
 // Supported node types (MVP: Start, Agent, End only)

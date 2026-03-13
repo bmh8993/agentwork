@@ -132,9 +132,9 @@ describe('logging-masking-retention', () => {
 
       const masked = maskSensitiveData(data)
 
-      expect(masked.user.username).toBe('user123')
-      expect(masked.user.password).toBe('se...23')
-      expect(masked.config.api_key).toBe('ke...23')
+      expect((masked.user as Record<string, unknown>).username).toBe('user123')
+      expect((masked.user as Record<string, unknown>).password).toBe('se...23')
+      expect((masked.config as Record<string, unknown>).api_key).toBe('ke...23')
     })
   })
 

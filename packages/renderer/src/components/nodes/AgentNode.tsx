@@ -5,13 +5,15 @@
  * ADR-0017: Agent Card UX and Draft/Publish Gate
  */
 
-import { Handle, Position, NodeProps } from '@xyflow/react';
+import { Handle, Position, type NodeProps } from '@xyflow/react';
 import type { NodeData } from '../../types/workflow';
 
-export function AgentNode({ data }: NodeProps<NodeData>) {
+export function AgentNode({ data }: NodeProps) {
+  const nodeData = data as NodeData;
+
   // Check if required fields are populated (from config object)
-  const actionText = data.config?.action_text;
-  const doneCriteria = data.config?.done_criteria;
+  const actionText = nodeData.config?.action_text;
+  const doneCriteria = nodeData.config?.done_criteria;
   const hasActionText = !!actionText && actionText.trim().length > 0;
   const hasDoneCriteria = !!doneCriteria && doneCriteria.trim().length > 0;
   const isComplete = hasActionText && hasDoneCriteria;
@@ -43,7 +45,7 @@ export function AgentNode({ data }: NodeProps<NodeData>) {
         }}
       >
         <span style={{ fontSize: '20px' }}>🤖</span>
-        <strong>{data.name || 'Agent'}</strong>
+        <strong>{nodeData.name || 'Agent'}</strong>
         {!isComplete && (
           <span
             style={{
@@ -64,14 +66,14 @@ export function AgentNode({ data }: NodeProps<NodeData>) {
       <div style={{ fontSize: '12px', opacity: 0.9 }}>
         <div style={{ marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
           <span>📚 Knowledge:</span>
-          <span style={{ opacity: data.config?.knowledge ? 1 : 0.5 }}>
-            {data.config?.knowledge || '(empty)'}
+          <span style={{ opacity: nodeData.config?.knowledge ? 1 : 0.5 }}>
+            {nodeData.config?.knowledge || '(empty)'}
           </span>
         </div>
         <div style={{ marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
           <span>🔧 Tool:</span>
-          <span style={{ opacity: data.config?.tool ? 1 : 0.5 }}>
-            {data.config?.tool || '(empty)'}
+          <span style={{ opacity: nodeData.config?.tool ? 1 : 0.5 }}>
+            {nodeData.config?.tool || '(empty)'}
           </span>
         </div>
         <div style={{ marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>

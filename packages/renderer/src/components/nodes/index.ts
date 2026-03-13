@@ -10,7 +10,7 @@ import { AgentNode } from './AgentNode';
 import { EndNode } from './EndNode';
 
 export const nodeTypes: NodeTypes = {
-  start: StartNode,
-  agent: AgentNode,
-  end: EndNode,
+  Start: StartNode,
+  Agent: AgentNode,
+  End: EndNode,
 };

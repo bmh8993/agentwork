@@ -6,25 +6,21 @@
  */
 
 import { useCallback, useMemo, useEffect } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   Background,
   Controls,
   MiniMap,
-  Node,
-  Edge,
-  addEdge,
-  Connection,
+  type Node,
+  type Edge,
+  type Connection,
   useNodesState,
   useEdgesState,
   BackgroundVariant,
-  OnNodesChange,
-  OnEdgesChange,
-  NodeTypes,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useWorkflowStore } from '../store/workflowStore';
 import { nodeTypes } from './nodes';
-import type { NodeData } from '../types/workflow';
 
 interface WorkflowCanvasProps {
   onNodeClick?: (nodeId: string) => void;
@@ -32,9 +28,14 @@ interface WorkflowCanvasProps {
 
 export function WorkflowCanvas({ onNodeClick }: WorkflowCanvasProps) {
   const { nodes, edges, addEdge: storeAddEdge, readOnlyMode } = useWorkflowStore();
+  const flowEdgeData: Edge[] = edges.map((edge) => ({
+    id: edge.id,
+    source: edge.source_node_id,
+    target: edge.target_node_id,
+  }));
 
   // React Flow state
-  const [flowNodes, setFlowNodes, onNodesChange] = useNodesState<Node<NodeData>>(
+  const [flowNodes, setFlowNodes, onNodesChange] = useNodesState(
     nodes.map((n) => ({
       id: n.id,
       type: n.type,
@@ -43,7 +44,7 @@ export function WorkflowCanvas({ onNodeClick }: WorkflowCanvasProps) {
     }))
   );
 
-  const [flowEdges, setFlowEdges, onEdgesChange] = useEdgesState<Edge>(edges);
+  const [flowEdges, setFlowEdges, onEdgesChange] = useEdgesState(flowEdgeData);
 
   // Sync store nodes to React Flow when store changes
   useEffect(() => {
@@ -59,8 +60,8 @@ export function WorkflowCanvas({ onNodeClick }: WorkflowCanvasProps) {
 
   // Sync store edges to React Flow when store changes
   useEffect(() => {
-    setFlowEdges(edges);
-  }, [edges, setFlowEdges]);
+    setFlowEdges(flowEdgeData);
+  }, [flowEdgeData, setFlowEdges]);
 
   // Handle new connections (v1 format: source_node_id, target_node_id, branch)
   const onConnect = useCallback(
@@ -79,7 +80,7 @@ export function WorkflowCanvas({ onNodeClick }: WorkflowCanvasProps) {
 
   // Handle node click
   const onNodeClickHandler = useCallback(
-    (_: React.MouseEvent, node: Node<NodeData>) => {
+    (_event: React.MouseEvent, node: Node) => {
       if (!readOnlyMode && onNodeClick) {
         onNodeClick(node.id);
       }

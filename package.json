@@ -16,7 +16,7 @@
     "test:session-stream": "vitest run test-gates/session-stream/index.test.ts",
     "test:ui-errors": "vitest run test-gates/ui-errors/index.test.ts",
     "build": "pnpm -r --filter './packages/**' build",
-    "lint": "eslint . --ext .ts,.tsx",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "dev": "pnpm --filter '@opencode/renderer' dev",
     "dev:electron": "pnpm --filter '@opencode/app' build && NODE_ENV=development pnpm --filter '@opencode/app' start",
@@ -27,17 +27,22 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.11.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0",
-    "@vitejs/plugin-react": "^4.2.1",
-    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.1",
+    "@typescript-eslint/parser": "^8.46.1",
+    "@vitejs/plugin-react": "^6.0.1",
+    "eslint": "^9.38.0",
     "typescript": "^5.3.3",
-    "vite": "^5.0.12",
-    "vitest": "^1.2.2"
+    "vite": "^8.0.0",
+    "vitest": "^4.1.0"
   },
   "engines": {
-    "node": ">=20.0.0",
+    "node": ">=22.22.1 <23",
     "pnpm": ">=8.0.0"
   },
-  "packageManager": "pnpm@8.15.0"
+  "packageManager": "pnpm@8.15.0",
+  "pnpm": {
+    "overrides": {
+      "global-agent": "^4.1.3"
+    }
+  }
 }
