@@ -25,6 +25,11 @@ export const ERROR_CODES = {
   PUBLISH_REQUIRED_FIELD_MISSING: 'publish_required_field_missing',
   PUBLISH_VALIDATION_FAILED: 'publish_validation_failed',
   RUN_VALIDATION_FAILED: 'run_validation_failed',
+  // ADR-0019: Cardinality errors
+  MULTIPLE_START_NODES: 'multiple_start_nodes',
+  MULTIPLE_END_NODES: 'multiple_end_nodes',
+  MISSING_START_NODE: 'missing_start_node',
+  MISSING_END_NODE: 'missing_end_node',
   // Phase 3: Installer & Logging
   MISSING_REQUIRED_FILE: 'missing_required_file',
   INVALID_PACKAGE_LAYOUT: 'invalid_package_layout',
@@ -131,6 +136,39 @@ export const ERROR_CATALOG: Record<ErrorCode, Omit<ValidationError, 'path'>> = {
     next_action: 'Resolve validation errors and run again.',
     retryable: false,
   },
+  // ADR-0019: Cardinality errors
+  [ERROR_CODES.MULTIPLE_START_NODES]: {
+    code: ERROR_CODES.MULTIPLE_START_NODES,
+    category: ERROR_CATEGORIES.ValidationError,
+    trigger_stage: TRIGGER_STAGES.PUBLISH,
+    message_user: 'Workflow has multiple Start nodes.',
+    next_action: 'Remove extra Start nodes. Only one Start node is allowed.',
+    retryable: false,
+  },
+  [ERROR_CODES.MULTIPLE_END_NODES]: {
+    code: ERROR_CODES.MULTIPLE_END_NODES,
+    category: ERROR_CATEGORIES.ValidationError,
+    trigger_stage: TRIGGER_STAGES.PUBLISH,
+    message_user: 'Workflow has multiple End nodes.',
+    next_action: 'Remove extra End nodes. Only one End node is allowed.',
+    retryable: false,
+  },
+  [ERROR_CODES.MISSING_START_NODE]: {
+    code: ERROR_CODES.MISSING_START_NODE,
+    category: ERROR_CATEGORIES.ValidationError,
+    trigger_stage: TRIGGER_STAGES.PUBLISH,
+    message_user: 'Workflow is missing a Start node.',
+    next_action: 'Add a Start node to begin the workflow.',
+    retryable: false,
+  },
+  [ERROR_CODES.MISSING_END_NODE]: {
+    code: ERROR_CODES.MISSING_END_NODE,
+    category: ERROR_CATEGORIES.ValidationError,
+    trigger_stage: TRIGGER_STAGES.PUBLISH,
+    message_user: 'Workflow is missing an End node.',
+    next_action: 'Add an End node to complete the workflow.',
+    retryable: false,
+  },
   // Phase 3: Installer errors
   [ERROR_CODES.MISSING_REQUIRED_FILE]: {
     code: ERROR_CODES.MISSING_REQUIRED_FILE,
@@ -208,6 +246,8 @@ export interface ValidationFlags {
   readOnlyCompatibility?: boolean
   // Load stage: unsupported node types detected
   unsupportedNodeTypes?: string[]
+  // ADR-0019: cardinality violations detected
+  cardinalityViolations?: ('multiple_start' | 'multiple_end' | 'missing_start' | 'missing_end')[]
 }
 
 // Helper to check if validation passed

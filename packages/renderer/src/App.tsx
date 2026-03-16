@@ -39,6 +39,16 @@ function App() {
   const handleDraftSave = () => {
     const result = validateForDraft(workflow);
 
+    if (!result.canSave) {
+      setNotification({
+        type: 'error',
+        errors: result.errors,
+        warnings: [],
+        message: 'Draft save failed',
+      });
+      return;
+    }
+
     if (result.warnings.length > 0) {
       setNotification({
         type: 'warning',

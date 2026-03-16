@@ -6,7 +6,8 @@
  */
 
 import { create } from 'zustand';
-import type { NodeData, Edge, WorkflowState, ReadOnlyFlags } from '../types/workflow';
+import type { NodeData, Edge, WorkflowState, ReadOnlyFlags, NodeType } from '../types/workflow';
+import { CARDINALITY_RULES } from '../types/workflow';
 
 interface WorkflowStore extends WorkflowState {
   // Actions
@@ -19,6 +20,10 @@ interface WorkflowStore extends WorkflowState {
   setReadOnlyMode: (flags: ReadOnlyFlags) => void;
   clearWorkflow: () => void;
 
+  // ADR-0019: Cardinality guards
+  canAddNodeType: (type: NodeType) => boolean;
+  canDeleteNode: (id: string) => boolean;
+
   // Validation state
   validationErrors: string[];
   setValidationErrors: (errors: string[]) => void;
@@ -29,7 +34,21 @@ interface WorkflowStore extends WorkflowState {
 }
 
 const initialState: WorkflowState = {
-  nodes: [],
+  // ADR-0019: Default workflow starts with Start and End nodes
+  nodes: [
+    {
+      id: 'start-1',
+      name: '🚀 Start',
+      type: 'Start',
+      position: [100, 100],
+    },
+    {
+      id: 'end-1',
+      name: '🏁 End',
+      type: 'End',
+      position: [500, 100],
+    },
+  ],
   edges: [],
   metadata: {
     version: '1',
@@ -37,13 +56,51 @@ const initialState: WorkflowState = {
   readOnlyMode: false,
 };
 
-export const useWorkflowStore = create<WorkflowStore>((set) => ({
+export const useWorkflowStore = create<WorkflowStore>((set, get) => ({
   ...initialState,
 
+  // ADR-0019: Cardinality guard - check if node type can be added
+  canAddNodeType: (type: NodeType) => {
+    const state = get()
+    const currentCount = state.nodes.filter((n) => n.type === type).length
+    const rule = CARDINALITY_RULES[type]
+
+    return currentCount < rule.max
+  },
+
+  // ADR-0019: Cardinality guard - check if node can be deleted
+  canDeleteNode: (id: string) => {
+    const state = get()
+    const node = state.nodes.find((n) => n.id === id)
+
+    if (!node) {
+      return false // Node doesn't exist
+    }
+
+    const type = node.type as NodeType
+    const rule = CARDINALITY_RULES[type]
+    const currentCount = state.nodes.filter((n) => n.type === type).length
+
+    // Can't delete if it would go below minimum
+    return currentCount > rule.min
+  },
+
   addNode: (node) =>
-    set((state) => ({
-      nodes: [...state.nodes, { ...node, position: node.position || [0, 0] }],
-    })),
+    set((state) => {
+      // ADR-0019: Check cardinality before adding
+      const type = node.type as NodeType
+      const currentCount = state.nodes.filter((n) => n.type === type).length
+      const rule = CARDINALITY_RULES[type]
+
+      if (currentCount >= rule.max) {
+        // Don't add if it would exceed maximum
+        return state
+      }
+
+      return {
+        nodes: [...state.nodes, { ...node, position: node.position || [0, 0] }],
+      }
+    }),
 
   updateNode: (id, data) =>
     set((state) => ({
@@ -51,13 +108,31 @@ export const useWorkflowStore = create<WorkflowStore>((set) => ({
     })),
 
   deleteNode: (id) =>
-    set((state) => ({
-      nodes: state.nodes.filter((n) => n.id !== id),
-      // Update: use source_node_id/target_node_id for v1 schema
-      edges: state.edges.filter(
-        (e) => e.source_node_id !== id && e.target_node_id !== id
-      ),
-    })),
+    set((state) => {
+      // ADR-0019: Check cardinality before deleting
+      const node = state.nodes.find((n) => n.id === id)
+
+      if (!node) {
+        return state // Node doesn't exist
+      }
+
+      const type = node.type as NodeType
+      const rule = CARDINALITY_RULES[type]
+      const currentCount = state.nodes.filter((n) => n.type === type).length
+
+      // Don't delete if it would go below minimum
+      if (currentCount <= rule.min) {
+        return state
+      }
+
+      return {
+        nodes: state.nodes.filter((n) => n.id !== id),
+        // Update: use source_node_id/target_node_id for v1 schema
+        edges: state.edges.filter(
+          (e) => e.source_node_id !== id && e.target_node_id !== id
+        ),
+      }
+    }),
 
   addEdge: (edge) =>
     set((state) => ({

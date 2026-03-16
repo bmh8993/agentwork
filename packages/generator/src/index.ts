@@ -7,6 +7,7 @@
 
 import { createHash } from 'node:crypto'
 import { validateSchema } from '@opencode/skill-schema'
+import { addCardinalityErrors, checkNodeCardinality } from '@opencode/skill-domain'
 
 // Skill data from SKILL.json
 export interface SkillData {
@@ -153,16 +154,28 @@ ${content}
 
 /**
  * Parse SKILL.json and generate SKILL.md
+ * ADR-0019: Apply domain validation (Start/End cardinality) to generated data
  */
 export function generateFromJson(jsonData: unknown): GenerationResult {
-  // First validate the JSON
-  const validation = validateSchema(jsonData)
+  // Step 1: Validate schema
+  const schemaValidation = validateSchema(jsonData)
 
-  if (!validation.valid) {
+  if (!schemaValidation.valid) {
     return {
       success: false,
       markdown: '',
-      errors: validation.errors.map(e => `${e.code}: ${e.message_user}`),
+      errors: schemaValidation.errors.map(e => `${e.code}: ${e.message_user}`),
+    }
+  }
+
+  // Step 2: Validate domain rules (Start/End cardinality)
+  const domainValidation = addCardinalityErrors(schemaValidation, jsonData)
+
+  if (!domainValidation.valid) {
+    return {
+      success: false,
+      markdown: '',
+      errors: domainValidation.errors.map(e => `${e.code}: ${e.message_user}`),
     }
   }
 

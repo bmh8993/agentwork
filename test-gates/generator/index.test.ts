@@ -137,7 +137,22 @@ describe('skill-md-generation', () => {
           content_md: 'Content',
         },
         workflow: {
-          nodes: [],
+          nodes: [
+            {
+              id: 'start-1',
+              name: 'Start',
+              type: 'Start',
+              position: [100, 100],
+              config: {},
+            },
+            {
+              id: 'end-1',
+              name: 'End',
+              type: 'End',
+              position: [300, 100],
+              config: {},
+            },
+          ],
           edges: [],
           layout: {},
         },
@@ -171,6 +186,135 @@ describe('skill-md-generation', () => {
 
       expect(result.success).toBe(false)
       expect(result.errors.length).toBeGreaterThan(0)
+    })
+
+    // ADR-0019: Domain validation - cardinality rules
+    it('should fail with multiple_start_nodes error when workflow has multiple Start nodes', () => {
+      const jsonData = {
+        version: '1',
+        skill: {
+          id: 'skill-001',
+          name: 'Test Skill',
+          description: 'A test skill',
+          content_md: 'Content',
+        },
+        workflow: {
+          nodes: [
+            { id: 'start-1', name: 'Start 1', type: 'Start', position: [100, 100], config: {} },
+            { id: 'start-2', name: 'Start 2', type: 'Start', position: [200, 100], config: {} },
+            { id: 'end-1', name: 'End', type: 'End', position: [300, 100], config: {} },
+          ],
+          edges: [],
+          layout: {},
+        },
+      }
+
+      const result = generateFromJson(jsonData)
+
+      expect(result.success).toBe(false)
+      expect(result.errors.some(e => e.includes('MULTIPLE_START_NODES') || e.includes('Start nodes'))).toBe(true)
+    })
+
+    it('should fail with multiple_end_nodes error when workflow has multiple End nodes', () => {
+      const jsonData = {
+        version: '1',
+        skill: {
+          id: 'skill-001',
+          name: 'Test Skill',
+          description: 'A test skill',
+          content_md: 'Content',
+        },
+        workflow: {
+          nodes: [
+            { id: 'start-1', name: 'Start', type: 'Start', position: [100, 100], config: {} },
+            { id: 'end-1', name: 'End 1', type: 'End', position: [300, 100], config: {} },
+            { id: 'end-2', name: 'End 2', type: 'End', position: [400, 100], config: {} },
+          ],
+          edges: [],
+          layout: {},
+        },
+      }
+
+      const result = generateFromJson(jsonData)
+
+      expect(result.success).toBe(false)
+      expect(result.errors.some(e => e.includes('MULTIPLE_END_NODES') || e.includes('End nodes'))).toBe(true)
+    })
+
+    it('should fail with missing_start_node error when workflow has no Start node', () => {
+      const jsonData = {
+        version: '1',
+        skill: {
+          id: 'skill-001',
+          name: 'Test Skill',
+          description: 'A test skill',
+          content_md: 'Content',
+        },
+        workflow: {
+          nodes: [
+            { id: 'agent-1', name: 'Agent', type: 'Agent', position: [200, 100], config: {} },
+            { id: 'end-1', name: 'End', type: 'End', position: [300, 100], config: {} },
+          ],
+          edges: [],
+          layout: {},
+        },
+      }
+
+      const result = generateFromJson(jsonData)
+
+      expect(result.success).toBe(false)
+      expect(result.errors.some(e => e.includes('MISSING_START_NODE') || e.includes('Start node'))).toBe(true)
+    })
+
+    it('should fail with missing_end_node error when workflow has no End node', () => {
+      const jsonData = {
+        version: '1',
+        skill: {
+          id: 'skill-001',
+          name: 'Test Skill',
+          description: 'A test skill',
+          content_md: 'Content',
+        },
+        workflow: {
+          nodes: [
+            { id: 'start-1', name: 'Start', type: 'Start', position: [100, 100], config: {} },
+            { id: 'agent-1', name: 'Agent', type: 'Agent', position: [200, 100], config: {} },
+          ],
+          edges: [],
+          layout: {},
+        },
+      }
+
+      const result = generateFromJson(jsonData)
+
+      expect(result.success).toBe(false)
+      expect(result.errors.some(e => e.includes('MISSING_END_NODE') || e.includes('End node'))).toBe(true)
+    })
+
+    it('should succeed when workflow has exactly one Start and one End node', () => {
+      const jsonData = {
+        version: '1',
+        skill: {
+          id: 'skill-001',
+          name: 'Test Skill',
+          description: 'A test skill',
+          content_md: 'Content',
+        },
+        workflow: {
+          nodes: [
+            { id: 'start-1', name: 'Start', type: 'Start', position: [100, 100], config: {} },
+            { id: 'agent-1', name: 'Agent', type: 'Agent', position: [200, 100], config: {} },
+            { id: 'end-1', name: 'End', type: 'End', position: [300, 100], config: {} },
+          ],
+          edges: [],
+          layout: {},
+        },
+      }
+
+      const result = generateFromJson(jsonData)
+
+      expect(result.success).toBe(true)
+      expect(result.markdown).toContain('Test Skill')
     })
   })
 
@@ -265,6 +409,13 @@ description: Old description
               name: 'Start',
               type: 'Start',
               position: [100, 100],
+              config: {},
+            },
+            {
+              id: 'n2',
+              name: 'End',
+              type: 'End',
+              position: [300, 100],
               config: {},
             },
           ],

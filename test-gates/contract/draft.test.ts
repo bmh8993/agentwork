@@ -57,11 +57,63 @@ describe('draft-structural-save: Validation', () => {
     expect(result.errors.length).toBeGreaterThan(0)
   })
 
+  // ADR-0019: Cardinality violations block Draft Save
+  it('multiple Start nodes fail draft validation', () => {
+    const multipleStartData = {
+      version: '1',
+      skill: {
+        id: 'test-skill',
+        name: 'Test',
+        description: 'Test skill',
+      },
+      workflow: {
+        nodes: [
+          { id: 'n1', name: 'Start 1', type: 'Start', position: [0, 0], config: {} },
+          { id: 'n2', name: 'Start 2', type: 'Start', position: [100, 0], config: {} },
+          { id: 'n3', name: 'End', type: 'End', position: [200, 0], config: {} },
+        ],
+        edges: [],
+      },
+    }
+
+    const result = validateDraft(multipleStartData)
+    expect(result.valid).toBe(false)
+    expect(result.errors.some(e => e.code.includes('MULTIPLE_START') || e.message_user.includes('Start'))).toBe(true)
+  })
+
+  it('missing End node fails draft validation', () => {
+    const missingEndData = {
+      version: '1',
+      skill: {
+        id: 'test-skill',
+        name: 'Test',
+        description: 'Test skill',
+      },
+      workflow: {
+        nodes: [
+          { id: 'n1', name: 'Start', type: 'Start', position: [0, 0], config: {} },
+          { id: 'n2', name: 'Agent', type: 'Agent', position: [100, 0], config: {} },
+        ],
+        edges: [],
+      },
+    }
+
+    const result = validateDraft(missingEndData)
+    expect(result.valid).toBe(false)
+    expect(result.errors.some(e => e.code.includes('MISSING_END') || e.message_user.includes('End'))).toBe(true)
+  })
+
   it('canSave helper works correctly', () => {
     const validData = {
       version: '1',
       skill: { id: 'test', name: 'Test', description: 'Test' },
-      workflow: { nodes: [], edges: [] },
+      workflow: {
+        nodes: [
+          { id: 'n1', name: 'Start', type: 'Start', position: [0, 0], config: {} },
+          { id: 'n2', name: 'End', type: 'End', position: [100, 0], config: {} },
+        ],
+        edges: [],
+      },
     }
 
     const invalidData = {
@@ -195,13 +247,25 @@ describe('draft-structural-save: Save operations', () => {
     const data1 = {
       version: '1',
       skill: { id: 'skill1', name: 'Version 1', description: 'First' },
-      workflow: { nodes: [], edges: [] },
+      workflow: {
+        nodes: [
+          { id: 'n1', name: 'Start', type: 'Start', position: [0, 0], config: {} },
+          { id: 'n2', name: 'End', type: 'End', position: [100, 0], config: {} },
+        ],
+        edges: [],
+      },
     }
 
     const data2 = {
       version: '1',
       skill: { id: 'skill2', name: 'Version 2', description: 'Second' },
-      workflow: { nodes: [], edges: [] },
+      workflow: {
+        nodes: [
+          { id: 'n1', name: 'Start', type: 'Start', position: [0, 0], config: {} },
+          { id: 'n2', name: 'End', type: 'End', position: [100, 0], config: {} },
+        ],
+        edges: [],
+      },
     }
 
     // Save first version

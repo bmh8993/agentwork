@@ -19,6 +19,9 @@ import {
   addDraftPublishWarnings,
   addPublishRequiredFieldErrors,
   hasUnsupportedNodes,
+  addCardinalityReadOnlyFlags,
+  addCardinalityWarnings,
+  addCardinalityErrors,
 } from '@opencode/skill-domain'
 
 // Stage: Load/Draft/Publish/Run validation entry points
@@ -30,8 +33,11 @@ export function validateSchema(data: unknown): ValidationResult {
 export function validateLoad(data: unknown): ValidationResult {
   const schemaResult = validateSchema(data)
 
-  // Add read-only compatibility flags if unsupported nodes present
-  return addReadOnlyCompatibilityFlags(schemaResult, data)
+  // ADR-0019: Check cardinality first, then unsupported nodes
+  let result = addCardinalityReadOnlyFlags(schemaResult, data)
+  result = addReadOnlyCompatibilityFlags(result, data)
+
+  return result
 }
 
 // Turn 7: Draft validator with warnings for missing publish fields
@@ -39,7 +45,12 @@ export function validateDraft(data: unknown): ValidationResult {
   const schemaResult = validateSchema(data)
 
   // Add warnings for missing publish fields (doesn't block draft)
-  return addDraftPublishWarnings(schemaResult, data)
+  let result = addDraftPublishWarnings(schemaResult, data)
+
+  // ADR-0019: Cardinality violations block Draft Save
+  result = addCardinalityErrors(result, data)
+
+  return result
 }
 
 // Turn 7: Publish validator with strict required field check
@@ -50,8 +61,15 @@ export function validatePublish(data: unknown): ValidationResult {
     return schemaResult
   }
 
+  // ADR-0019: Check cardinality first, then required fields
+  let result = addCardinalityErrors(schemaResult, data)
+
+  if (!result.valid) {
+    return result
+  }
+
   // Add errors for missing required publish fields (blocks publish)
-  return addPublishRequiredFieldErrors(schemaResult, data)
+  return addPublishRequiredFieldErrors(result, data)
 }
 
 // Turn 8: Run validator with strict validation (same as publish)
@@ -62,21 +80,28 @@ export function validateRun(data: unknown): ValidationResult {
     return schemaResult
   }
 
-  // Run requires all publish constraints to be satisfied
-  const publishResult = addPublishRequiredFieldErrors(schemaResult, data)
+  // ADR-0019: Check cardinality first
+  let result = addCardinalityErrors(schemaResult, data)
 
-  if (!publishResult.valid) {
-    return publishResult
+  if (!result.valid) {
+    return result
+  }
+
+  // Run requires all publish constraints to be satisfied
+  result = addPublishRequiredFieldErrors(result, data)
+
+  if (!result.valid) {
+    return result
   }
 
   // Additionally, run is blocked if unsupported nodes are present
   // (unlike load which allows read-only mode)
   if (hasUnsupportedNodes(data)) {
     return {
-      ...publishResult,
+      ...result,
       valid: false,
       errors: [
-        ...publishResult.errors,
+        ...result.errors,
         {
           code: 'unsupported_node_type' as const,
           category: 'ValidationError' as const,
@@ -89,5 +114,5 @@ export function validateRun(data: unknown): ValidationResult {
     }
   }
 
-  return publishResult
+  return result
 }

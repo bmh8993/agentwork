@@ -1,0 +1,30 @@
+{
+  "version": "1",
+  "skill": {
+    "id": "test-skill",
+    "name": "Test Skill",
+    "description": "Invalid v1 skill fixture missing End node (ADR-0019 violation)"
+  },
+  "workflow": {
+    "nodes": [
+      {
+        "id": "start-1",
+        "name": "Start",
+        "type": "Start",
+        "position": [0, 0],
+        "config": {}
+      },
+      {
+        "id": "agent-1",
+        "name": "Agent",
+        "type": "Agent",
+        "position": [200, 0],
+        "config": {
+          "action_text": "Complete the task",
+          "done_criteria": "Task is marked as complete"
+        }
+      }
+    ],
+    "edges": []
+  }
+}

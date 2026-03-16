@@ -3,9 +3,10 @@
  *
  * React Flow-based workflow editor canvas.
  * Enforces Start/Agent/End node type constraints (ADR-0015, ADR-0018).
+ * ADR-0019: Enforces cardinality rules (Start/End must be exactly 1 each).
  */
 
-import { useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useMemo, useEffect, useState } from 'react';
 import {
   ReactFlow,
   Background,
@@ -27,7 +28,8 @@ interface WorkflowCanvasProps {
 }
 
 export function WorkflowCanvas({ onNodeClick }: WorkflowCanvasProps) {
-  const { nodes, edges, addEdge: storeAddEdge, readOnlyMode } = useWorkflowStore();
+  const { nodes, edges, addEdge: storeAddEdge, deleteNode: storeDeleteNode, readOnlyMode, canDeleteNode } = useWorkflowStore();
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const flowEdgeData: Edge[] = edges.map((edge) => ({
     id: edge.id,
     source: edge.source_node_id,
@@ -88,11 +90,44 @@ export function WorkflowCanvas({ onNodeClick }: WorkflowCanvasProps) {
     [readOnlyMode, onNodeClick]
   );
 
+  // ADR-0019: Handle node deletion with cardinality guard
+  const onNodesDeleteHandler = useCallback(
+    (nodesToDelete: Node[]) => {
+      if (readOnlyMode) {
+        return false; // Prevent deletion in read-only mode
+      }
+
+      // Check each node for cardinality constraints
+      for (const node of nodesToDelete) {
+        if (!canDeleteNode(node.id)) {
+          const nodeData = node.data as { type: string; name: string };
+          const message =
+            nodeData.type === 'Start'
+              ? 'Cannot delete the only Start node'
+              : nodeData.type === 'End'
+              ? 'Cannot delete the only End node'
+              : 'Cannot delete this node';
+
+          setToastMessage(message);
+          setTimeout(() => setToastMessage(null), 3000);
+          return false; // Prevent deletion
+        }
+      }
+
+      // All nodes can be deleted, proceed with deletion
+      for (const node of nodesToDelete) {
+        storeDeleteNode(node.id);
+      }
+      return true;
+    },
+    [readOnlyMode, canDeleteNode, storeDeleteNode]
+  );
+
   // Disable editing in read-only mode
   const isInteractive = useMemo(() => !readOnlyMode, [readOnlyMode]);
 
   return (
-    <div style={{ width: '100%', height: '100%', background: '#1a1a1a' }}>
+    <div style={{ width: '100%', height: '100%', background: '#1a1a1a', position: 'relative' }}>
       <ReactFlow
         nodes={flowNodes}
         edges={flowEdges}
@@ -100,6 +135,7 @@ export function WorkflowCanvas({ onNodeClick }: WorkflowCanvasProps) {
         onEdgesChange={readOnlyMode ? undefined : onEdgesChange}
         onConnect={readOnlyMode ? undefined : onConnect}
         onNodeClick={onNodeClickHandler}
+        onNodesDelete={readOnlyMode ? undefined : onNodesDeleteHandler}
         nodeTypes={nodeTypes}
         fitView
         nodesDraggable={isInteractive}
@@ -109,6 +145,7 @@ export function WorkflowCanvas({ onNodeClick }: WorkflowCanvasProps) {
         selectionOnDrag
         minZoom={0.2}
         maxZoom={2}
+        deleteKeyCode="Delete"
       >
         <Background variant={BackgroundVariant.Dots} gap={16} size={1} color="#333" />
         <Controls />
@@ -131,6 +168,27 @@ export function WorkflowCanvas({ onNodeClick }: WorkflowCanvasProps) {
           maskColor="rgba(0, 0, 0, 0.6)"
         />
       </ReactFlow>
+
+      {toastMessage && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            padding: '12px 20px',
+            background: '#7c2d12',
+            border: '1px solid #fca5a5',
+            borderRadius: '8px',
+            fontSize: '14px',
+            color: '#fee2e2',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
+            zIndex: 1000,
+          }}
+        >
+          {toastMessage}
+        </div>
+      )}
     </div>
   );
 }

@@ -119,3 +119,136 @@ describe('load-compat-readonly: Schema validation still applies', () => {
     expect(result.errors[0].code).toBe(ERROR_CODES.SCHEMA_VALIDATION_FAILED)
   })
 })
+
+// ADR-0019: Cardinality violations also trigger read-only compatibility
+describe('load-compat-readonly: Cardinality violations', () => {
+  it('multiple Start nodes load with readOnlyCompatibility flag', () => {
+    const multipleStartData = {
+      version: '1',
+      skill: {
+        id: 'test-skill',
+        name: 'Test',
+        description: 'Test',
+      },
+      workflow: {
+        nodes: [
+          { id: 'n1', name: 'Start 1', type: 'Start', position: [0, 0], config: {} },
+          { id: 'n2', name: 'Start 2', type: 'Start', position: [100, 0], config: {} },
+          { id: 'n3', name: 'End', type: 'End', position: [200, 0], config: {} },
+        ],
+        edges: [],
+      },
+    }
+
+    const result = validateLoad(multipleStartData)
+
+    // Load should succeed but with read-only flag
+    expect(result.valid).toBe(true)
+    expect(result.flags?.readOnlyCompatibility).toBe(true)
+    expect(result.flags?.cardinalityViolations).toContain('multiple_start')
+  })
+
+  it('multiple End nodes load with readOnlyCompatibility flag', () => {
+    const multipleEndData = {
+      version: '1',
+      skill: {
+        id: 'test-skill',
+        name: 'Test',
+        description: 'Test',
+      },
+      workflow: {
+        nodes: [
+          { id: 'n1', name: 'Start', type: 'Start', position: [0, 0], config: {} },
+          { id: 'n2', name: 'End 1', type: 'End', position: [100, 0], config: {} },
+          { id: 'n3', name: 'End 2', type: 'End', position: [200, 0], config: {} },
+        ],
+        edges: [],
+      },
+    }
+
+    const result = validateLoad(multipleEndData)
+
+    // Load should succeed but with read-only flag
+    expect(result.valid).toBe(true)
+    expect(result.flags?.readOnlyCompatibility).toBe(true)
+    expect(result.flags?.cardinalityViolations).toContain('multiple_end')
+  })
+
+  it('missing Start node loads with readOnlyCompatibility flag', () => {
+    const missingStartData = {
+      version: '1',
+      skill: {
+        id: 'test-skill',
+        name: 'Test',
+        description: 'Test',
+      },
+      workflow: {
+        nodes: [
+          { id: 'n1', name: 'Agent', type: 'Agent', position: [100, 0], config: {} },
+          { id: 'n2', name: 'End', type: 'End', position: [200, 0], config: {} },
+        ],
+        edges: [],
+      },
+    }
+
+    const result = validateLoad(missingStartData)
+
+    // Load should succeed but with read-only flag
+    expect(result.valid).toBe(true)
+    expect(result.flags?.readOnlyCompatibility).toBe(true)
+    expect(result.flags?.cardinalityViolations).toContain('missing_start')
+  })
+
+  it('missing End node loads with readOnlyCompatibility flag', () => {
+    const missingEndData = {
+      version: '1',
+      skill: {
+        id: 'test-skill',
+        name: 'Test',
+        description: 'Test',
+      },
+      workflow: {
+        nodes: [
+          { id: 'n1', name: 'Start', type: 'Start', position: [0, 0], config: {} },
+          { id: 'n2', name: 'Agent', type: 'Agent', position: [100, 0], config: {} },
+        ],
+        edges: [],
+      },
+    }
+
+    const result = validateLoad(missingEndData)
+
+    // Load should succeed but with read-only flag
+    expect(result.valid).toBe(true)
+    expect(result.flags?.readOnlyCompatibility).toBe(true)
+    expect(result.flags?.cardinalityViolations).toContain('missing_end')
+  })
+
+  it('both unsupported nodes and cardinality violations are reported', () => {
+    const combinedData = {
+      version: '1',
+      skill: {
+        id: 'test-skill',
+        name: 'Test',
+        description: 'Test',
+      },
+      workflow: {
+        nodes: [
+          { id: 'n1', name: 'Start 1', type: 'Start', position: [0, 0], config: {} },
+          { id: 'n2', name: 'Start 2', type: 'Start', position: [100, 0], config: {} },
+          { id: 'n3', name: 'Condition', type: 'Condition', position: [200, 0], config: {} },
+          { id: 'n4', name: 'End', type: 'End', position: [300, 0], config: {} },
+        ],
+        edges: [],
+      },
+    }
+
+    const result = validateLoad(combinedData)
+
+    // Load should succeed but with both flags
+    expect(result.valid).toBe(true)
+    expect(result.flags?.readOnlyCompatibility).toBe(true)
+    expect(result.flags?.cardinalityViolations).toContain('multiple_start')
+    expect(result.flags?.unsupportedNodeTypes).toContain('Condition')
+  })
+})

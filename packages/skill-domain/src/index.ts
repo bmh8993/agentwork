@@ -65,6 +65,7 @@ export function addReadOnlyCompatibilityFlags(result: ValidationResult, data: un
     return {
       ...result,
       flags: {
+        ...result.flags,
         readOnlyCompatibility: true,
         unsupportedNodeTypes: unsupportedTypes,
       },
@@ -161,5 +162,146 @@ export function addDraftPublishWarnings(result: ValidationResult, data: unknown)
   return {
     ...result,
     warnings: [...result.warnings, ...warnings],
+  }
+}
+
+// ADR-0019: Cardinality validation
+export interface CardinalityViolation {
+  type: 'multiple_start' | 'multiple_end' | 'missing_start' | 'missing_end'
+  count: number
+}
+
+export interface CardinalityCheckResult {
+  valid: boolean
+  violations: CardinalityViolation[]
+}
+
+// Count nodes by type
+function countNodesByType(data: unknown): Record<string, number> {
+  const nodes = getNodes(data)
+  const counts: Record<string, number> = {}
+
+  for (const node of nodes) {
+    const type = node.type
+    if (typeof type === 'string') {
+      counts[type] = (counts[type] || 0) + 1
+    }
+  }
+
+  return counts
+}
+
+// Check node cardinality (Start: 1, End: 1, Agent: 0+)
+export function checkNodeCardinality(data: unknown): CardinalityCheckResult {
+  const counts = countNodesByType(data)
+  const violations: CardinalityViolation[] = []
+
+  const startCount = counts['Start'] || 0
+  const endCount = counts['End'] || 0
+
+  if (startCount > 1) {
+    violations.push({ type: 'multiple_start', count: startCount })
+  }
+  if (startCount === 0) {
+    violations.push({ type: 'missing_start', count: 0 })
+  }
+  if (endCount > 1) {
+    violations.push({ type: 'multiple_end', count: endCount })
+  }
+  if (endCount === 0) {
+    violations.push({ type: 'missing_end', count: 0 })
+  }
+
+  return {
+    valid: violations.length === 0,
+    violations,
+  }
+}
+
+// Add cardinality errors for Publish/Run validation
+export function addCardinalityErrors(result: ValidationResult, data: unknown): ValidationResult {
+  const check = checkNodeCardinality(data)
+
+  if (check.valid) {
+    return result
+  }
+
+  const errors = check.violations.map((violation) => {
+    switch (violation.type) {
+      case 'multiple_start':
+        return createError(ERROR_CODES.MULTIPLE_START_NODES, {
+          path: '/workflow/nodes',
+          message_user: `Workflow has ${violation.count} Start nodes. Only one is allowed.`,
+        })
+      case 'multiple_end':
+        return createError(ERROR_CODES.MULTIPLE_END_NODES, {
+          path: '/workflow/nodes',
+          message_user: `Workflow has ${violation.count} End nodes. Only one is allowed.`,
+        })
+      case 'missing_start':
+        return createError(ERROR_CODES.MISSING_START_NODE, {
+          path: '/workflow/nodes',
+          message_user: 'Workflow is missing a Start node.',
+        })
+      case 'missing_end':
+        return createError(ERROR_CODES.MISSING_END_NODE, {
+          path: '/workflow/nodes',
+          message_user: 'Workflow is missing an End node.',
+        })
+    }
+  })
+
+  return {
+    ...result,
+    valid: false,
+    errors: [...result.errors, ...errors],
+  }
+}
+
+// Add cardinality warnings for Draft validation
+export function addCardinalityWarnings(result: ValidationResult, data: unknown): ValidationResult {
+  const check = checkNodeCardinality(data)
+
+  if (check.valid) {
+    return result
+  }
+
+  const warnings = check.violations.map((violation) => {
+    switch (violation.type) {
+      case 'multiple_start':
+        return `Workflow has ${violation.count} Start nodes. Only one Start node is allowed for publish.`
+      case 'multiple_end':
+        return `Workflow has ${violation.count} End nodes. Only one End node is allowed for publish.`
+      case 'missing_start':
+        return 'Workflow will require a Start node for publish.'
+      case 'missing_end':
+        return 'Workflow will require an End node for publish.'
+    }
+  })
+
+  return {
+    ...result,
+    warnings: [...result.warnings, ...warnings],
+  }
+}
+
+// Add cardinality read-only flags for Load validation
+export function addCardinalityReadOnlyFlags(result: ValidationResult, data: unknown): ValidationResult {
+  const check = checkNodeCardinality(data)
+
+  if (check.valid) {
+    return result
+  }
+
+  // If there are cardinality violations, set read-only compatibility mode
+  const violationTypes = check.violations.map((v) => v.type)
+
+  return {
+    ...result,
+    flags: {
+      ...result.flags,
+      readOnlyCompatibility: true,
+      cardinalityViolations: violationTypes,
+    },
   }
 }

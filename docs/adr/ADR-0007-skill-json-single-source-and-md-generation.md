@@ -125,7 +125,7 @@ Skill 폴더의 기본 파일 세트는 아래로 고정한다.
 1. `SKILL.md`만 있는 폴더 import 시:
    1. frontmatter 파싱
    2. 본문 원문을 `skill.content_md`로 저장
-   3. workflow는 빈 기본값으로 생성
+   3. workflow는 기본 `Start` 1개 + `End` 1개로 생성
    4. `imported_from_md=true` 메타 기록
 2. 구버전(`SKILL-META.md`)이 있는 경우:
    1. 가능한 필드를 `SKILL.json.workflow`로 병합

@@ -3,6 +3,7 @@
  *
  * Plugin installer with source gate and layout validation
  * ADR-0016: MVP supports local folder + npm only
+ * ADR-0019: Support SKILL.md only input with default Start/End nodes
  */
 
 import { promises as fs } from 'fs'
@@ -13,6 +14,7 @@ import {
   TRIGGER_STAGES,
   type ValidationError,
 } from '@opencode/skill-schema'
+import { importFromMarkdown, isMarkdownFile } from '@opencode/skill-io'
 
 // Install source types
 export type InstallSource =
@@ -86,10 +88,11 @@ export function validateInstallSource(source: InstallSource): ValidationError[] 
 /**
  * Validate package layout
  * ADR-0010: Plugin package layout and manifest
+ * ADR-0019: Support SKILL.md only input with default Start/End nodes
  */
 export async function validatePackageLayout(
   packagePath: string
-): Promise<ValidationError[]> {
+): Promise<{ errors: ValidationError[]; warnings: string[]; importedSkillData?: unknown }> {
   const errors: ValidationError[] = []
   const warnings: string[] = []
 
@@ -105,22 +108,60 @@ export async function validatePackageLayout(
       next_action: 'Fix package layout to match the spec.',
       retryable: false,
     })
-    return errors
+    return { errors, warnings }
   }
 
-  // Check for SKILL.json (required canonical file)
+  /**
+   * Check if file exists
+   */
+  async function fileExists(filePath: string): Promise<boolean> {
+    try {
+      await fs.access(filePath)
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  // ADR-0019: Check for SKILL.json (required canonical file) or SKILL.md (import source)
   const skillJsonPath = join(packagePath, 'SKILL.json')
-  try {
-    await fs.access(skillJsonPath)
-  } catch {
+  const skillMdPath = join(packagePath, 'SKILL.md')
+
+  const hasSkillJson = await fileExists(skillJsonPath)
+  const hasSkillMd = await fileExists(skillMdPath)
+
+  if (!hasSkillJson && !hasSkillMd) {
     errors.push({
       code: ERROR_CODES.MISSING_REQUIRED_FILE,
       category: ERROR_CATEGORIES.InstallError,
       trigger_stage: TRIGGER_STAGES.INSTALL,
       message_user: 'Required file is missing.',
-      next_action: 'Include `SKILL.json` as canonical input (`SKILL.md` only is not install input).',
+      next_action: 'Include `SKILL.json` or `SKILL.md`.',
       retryable: false,
     })
+    return { errors, warnings }
+  }
+
+  // ADR-0019: SKILL.md only input - import to SKILL.json
+  if (!hasSkillJson && hasSkillMd) {
+    const importResult = await importFromMarkdown(skillMdPath)
+
+    if (!importResult.success || !importResult.skillData) {
+      errors.push({
+        code: ERROR_CODES.INVALID_PACKAGE_LAYOUT,
+        category: ERROR_CATEGORIES.InstallError,
+        trigger_stage: TRIGGER_STAGES.INSTALL,
+        message_user: importResult.error || 'Failed to import SKILL.md',
+        next_action: 'Fix SKILL.md format and try again.',
+        retryable: false,
+      })
+      return { errors, warnings }
+    }
+
+    warnings.push('SKILL.md only input detected. Imported with default Start/End nodes.')
+
+    // Return imported skill data for subsequent validation
+    return { errors, warnings, importedSkillData: importResult.skillData }
   }
 
   // Optional: Check for package.json (recommended for npm packages)
@@ -132,11 +173,12 @@ export async function validatePackageLayout(
     warnings.push('package.json not found (recommended for npm packages)')
   }
 
-  return errors
+  return { errors, warnings }
 }
 
 /**
  * Main install entry point with source gate and layout validation
+ * ADR-0019: SKILL.md only import and subsequent validation
  */
 export async function validateInstall(input: string): Promise<InstallResult> {
   const errors: ValidationError[] = []
@@ -152,13 +194,33 @@ export async function validateInstall(input: string): Promise<InstallResult> {
   }
 
   // Step 2: Validate package layout (only for local folder)
+  let importedSkillData: unknown | undefined
   if (source.type === 'local-folder') {
-    const layoutErrors = await validatePackageLayout(source.path)
-    errors.push(...layoutErrors)
+    const layoutResult = await validatePackageLayout(source.path)
+    errors.push(...layoutResult.errors)
+    warnings.push(...layoutResult.warnings)
 
-    if (layoutErrors.length > 0) {
+    if (layoutResult.errors.length > 0) {
       return { success: false, errors, warnings }
     }
+
+    // ADR-0019: If SKILL.md was imported, validate the generated data
+    importedSkillData = layoutResult.importedSkillData
+  }
+
+  // Step 3: Validate imported skill data (if any)
+  if (importedSkillData) {
+    // Use Publish-level validation for imported data
+    const { validatePublish } = await import('@opencode/skill-schema')
+    const validationResult = validatePublish(importedSkillData)
+
+    if (!validationResult.valid) {
+      errors.push(...validationResult.errors)
+      return { success: false, errors, warnings }
+    }
+
+    // Add validation warnings to installer warnings
+    warnings.push(...validationResult.warnings)
   }
 
   return { success: true, errors, warnings }

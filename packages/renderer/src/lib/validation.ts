@@ -52,14 +52,14 @@ function workflowToSkillJson(workflow: Workflow): any {
 
 /**
  * Validate workflow for Draft Save
- * Returns warnings but allows save
+ * Blocks save when draft validation returns errors
  */
 export function validateForDraft(workflow: Workflow) {
   const skillJson = workflowToSkillJson(workflow);
   const result = validateDraft(skillJson);
 
   return {
-    canSave: true, // Draft always allows save
+    canSave: result.valid,
     warnings: result.warnings || [],
     errors: result.errors || [],
   };

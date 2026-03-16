@@ -35,7 +35,7 @@ MVP plugin 설치 채널별 입력 포맷과 패키지 레이아웃/매니페스
 
 1. `SKILL.json`이 있으면 canonical로 사용한다.
 2. `SKILL.md`만 있으면 `SKILL.md -> SKILL.json` 컴파일을 수행한다.
-3. 컴파일 결과는 `ADR-0009` 스키마 검증을 반드시 통과해야 한다.
+3. 컴파일 결과는 `ADR-0009` 스키마 검증과 `ADR-0019` 구조 규칙 검증을 반드시 통과해야 한다.
 4. 컴파일 실패 시 원본은 보존하고 `skill_compile_failed`를 기록한다.
 
 ## Security Policy (MVP)

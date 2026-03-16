@@ -155,27 +155,27 @@ describe('package-layout-validation', () => {
   describe('valid package layout', () => {
     it('should accept package with SKILL.json', async () => {
       const validSkillPath = join(fixturesDir, 'valid-skill')
-      const errors = await validatePackageLayout(validSkillPath)
+      const result = await validatePackageLayout(validSkillPath)
 
-      expect(errors).toHaveLength(0)
+      expect(result.errors).toHaveLength(0)
     })
   })
 
   describe('missing required files', () => {
     it('should reject package without SKILL.json', async () => {
       const missingJsonPath = join(fixturesDir, 'missing-skill-json')
-      const errors = await validatePackageLayout(missingJsonPath)
+      const result = await validatePackageLayout(missingJsonPath)
 
-      expect(errors.length).toBeGreaterThan(0)
-      const missingError = errors.find(e => e.code === ERROR_CODES.MISSING_REQUIRED_FILE)
+      expect(result.errors.length).toBeGreaterThan(0)
+      const missingError = result.errors.find(e => e.code === ERROR_CODES.MISSING_REQUIRED_FILE)
       expect(missingError).toBeDefined()
     })
 
     it('should provide next_action for missing SKILL.json', async () => {
       const missingJsonPath = join(fixturesDir, 'missing-skill-json')
-      const errors = await validatePackageLayout(missingJsonPath)
+      const result = await validatePackageLayout(missingJsonPath)
 
-      const missingError = errors.find(e => e.code === ERROR_CODES.MISSING_REQUIRED_FILE)
+      const missingError = result.errors.find(e => e.code === ERROR_CODES.MISSING_REQUIRED_FILE)
       expect(missingError?.next_action).toContain('SKILL.json')
     })
   })
@@ -183,10 +183,10 @@ describe('package-layout-validation', () => {
   describe('non-existent path', () => {
     it('should reject non-existent directory', async () => {
       const nonExistentPath = join(fixturesDir, 'does-not-exist')
-      const errors = await validatePackageLayout(nonExistentPath)
+      const result = await validatePackageLayout(nonExistentPath)
 
-      expect(errors.length).toBeGreaterThan(0)
-      const layoutError = errors.find(e => e.code === ERROR_CODES.INVALID_PACKAGE_LAYOUT)
+      expect(result.errors.length).toBeGreaterThan(0)
+      const layoutError = result.errors.find(e => e.code === ERROR_CODES.INVALID_PACKAGE_LAYOUT)
       expect(layoutError).toBeDefined()
     })
   })
@@ -226,5 +226,15 @@ describe('install-folder-only integration', () => {
 
     expect(result.success).toBe(true)
     expect(result.errors).toHaveLength(0)
+  })
+
+  // ADR-0019: SKILL.md only import
+  it('should accept SKILL.md only folder and import with default Start/End', async () => {
+    const skillMdOnlyPath = join(fixturesDir, 'skill-md-only')
+    const result = await validateInstall(skillMdOnlyPath)
+
+    expect(result.success).toBe(true)
+    expect(result.errors).toHaveLength(0)
+    expect(result.warnings).toContain('SKILL.md only input detected. Imported with default Start/End nodes.')
   })
 })

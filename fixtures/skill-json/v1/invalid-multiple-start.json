@@ -1,0 +1,34 @@
+{
+  "version": "1",
+  "skill": {
+    "id": "test-skill",
+    "name": "Test Skill",
+    "description": "Invalid v1 skill fixture with multiple Start nodes (ADR-0019 violation)"
+  },
+  "workflow": {
+    "nodes": [
+      {
+        "id": "start-1",
+        "name": "Start 1",
+        "type": "Start",
+        "position": [0, 0],
+        "config": {}
+      },
+      {
+        "id": "start-2",
+        "name": "Start 2",
+        "type": "Start",
+        "position": [200, 0],
+        "config": {}
+      },
+      {
+        "id": "end-1",
+        "name": "End",
+        "type": "End",
+        "position": [400, 0],
+        "config": {}
+      }
+    ],
+    "edges": []
+  }
+}

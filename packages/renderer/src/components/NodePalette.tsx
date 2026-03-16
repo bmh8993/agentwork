@@ -3,9 +3,10 @@
  *
  * Draggable node templates for creating new nodes.
  * MVP: Only Start, Agent, End types are supported (ADR-0015, ADR-0018).
+ * ADR-0019: Cardinality rules limit Start/End to 1 each.
  */
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useWorkflowStore } from '../store/workflowStore';
 
 const NODE_TEMPLATES: Array<{
@@ -20,11 +21,23 @@ const NODE_TEMPLATES: Array<{
 ];
 
 export function NodePalette() {
-  const { addNode, readOnlyMode } = useWorkflowStore();
+  const { addNode, readOnlyMode, canAddNodeType, nodes } = useWorkflowStore();
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const handleAddNode = useCallback(
     (type: 'Start' | 'Agent' | 'End') => {
       if (readOnlyMode) return;
+
+      // ADR-0019: Check cardinality before adding
+      if (!canAddNodeType(type)) {
+        const message =
+          type === 'Start'
+            ? 'Only one Start node is allowed'
+            : 'Only one End node is allowed'
+        setToastMessage(message)
+        setTimeout(() => setToastMessage(null), 3000)
+        return
+      }
 
       const template = NODE_TEMPLATES.find((t) => t.type === type);
       if (!template) return;
@@ -37,7 +50,7 @@ export function NodePalette() {
         position: [...template.defaultPosition],  // v1 schema requires position
       });
     },
-    [addNode, readOnlyMode]
+    [addNode, readOnlyMode, canAddNodeType]
   );
 
   return (
@@ -62,38 +75,42 @@ export function NodePalette() {
         Nodes
       </h3>
 
-      {NODE_TEMPLATES.map((template) => (
-        <button
-          key={template.type}
-          onClick={() => handleAddNode(template.type)}
-          disabled={readOnlyMode}
-          style={{
-            padding: '10px 12px',
-            background: readOnlyMode ? '#262626' : '#1f1f1f',
-            border: `1px solid ${template.color}`,
-            borderRadius: '6px',
-            color: readOnlyMode ? '#525252' : '#e5e5e5',
-            cursor: readOnlyMode ? 'not-allowed' : 'pointer',
-            fontSize: '13px',
-            fontWeight: '500',
-            textAlign: 'left',
-            transition: 'all 0.2s',
-            opacity: readOnlyMode ? 0.5 : 1,
-          }}
-          onMouseEnter={(e) => {
-            if (!readOnlyMode) {
-              e.currentTarget.style.background = template.color;
-              e.currentTarget.style.color = '#000';
-            }
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = readOnlyMode ? '#262626' : '#1f1f1f';
-            e.currentTarget.style.color = readOnlyMode ? '#525252' : '#e5e5e5';
-          }}
-        >
-          {template.label}
-        </button>
-      ))}
+      {NODE_TEMPLATES.map((template) => {
+        const isDisabled = readOnlyMode || !canAddNodeType(template.type);
+
+        return (
+          <button
+            key={template.type}
+            onClick={() => handleAddNode(template.type)}
+            disabled={isDisabled}
+            style={{
+              padding: '10px 12px',
+              background: isDisabled ? '#262626' : '#1f1f1f',
+              border: `1px solid ${template.color}`,
+              borderRadius: '6px',
+              color: isDisabled ? '#525252' : '#e5e5e5',
+              cursor: isDisabled ? 'not-allowed' : 'pointer',
+              fontSize: '13px',
+              fontWeight: '500',
+              textAlign: 'left',
+              transition: 'all 0.2s',
+              opacity: isDisabled ? 0.5 : 1,
+            }}
+            onMouseEnter={(e) => {
+              if (!isDisabled) {
+                e.currentTarget.style.background = template.color;
+                e.currentTarget.style.color = '#000';
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = isDisabled ? '#262626' : '#1f1f1f';
+              e.currentTarget.style.color = isDisabled ? '#525252' : '#e5e5e5';
+            }}
+          >
+            {template.label}
+          </button>
+        );
+      })}
 
       {readOnlyMode && (
         <div
@@ -108,6 +125,23 @@ export function NodePalette() {
           }}
         >
           Read-only mode
+        </div>
+      )}
+
+      {toastMessage && (
+        <div
+          style={{
+            marginTop: '8px',
+            padding: '8px',
+            background: '#7c2d12',
+            border: '1px solid #fca5a5',
+            borderRadius: '4px',
+            fontSize: '11px',
+            color: '#fee2e2',
+            animation: 'fadeIn 0.3s ease-in',
+          }}
+        >
+          {toastMessage}
         </div>
       )}
     </div>

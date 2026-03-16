@@ -7,6 +7,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { validateDraft, validatePublish } from '@opencode/skill-schema';
+import { validateForDraft } from '../../packages/renderer/src/lib/validation';
 
 describe('draft-vs-publish-gate', () => {
   const minimalSkill = {
@@ -21,14 +22,29 @@ describe('draft-vs-publish-gate', () => {
     workflow: {
       nodes: [
         {
+          id: 'start-1',
+          name: 'Start',
+          type: 'Start',
+          position: [0, 0],
+        },
+        {
           id: 'agent-1',
           name: 'Incomplete Agent',
           type: 'Agent',
-          position: [0, 0],
+          position: [100, 0],
           config: {}, // Empty config = both fields missing
         },
+        {
+          id: 'end-1',
+          name: 'End',
+          type: 'End',
+          position: [200, 0],
+        },
       ],
-      edges: [],
+      edges: [
+        { id: 'e1', source_node_id: 'start-1', target_node_id: 'agent-1', branch: 'default' },
+        { id: 'e2', source_node_id: 'agent-1', target_node_id: 'end-1', branch: 'default' },
+      ],
     },
   };
 
@@ -72,17 +88,32 @@ describe('draft-vs-publish-gate', () => {
       workflow: {
         nodes: [
           {
+            id: 'start-1',
+            name: 'Start',
+            type: 'Start',
+            position: [0, 0],
+          },
+          {
             id: 'agent-1',
             name: 'Complete Agent',
             type: 'Agent',
-            position: [0, 0],
+            position: [100, 0],
             config: {
               action_text: 'Process data',
               done_criteria: 'Output ready',
             },
           },
+          {
+            id: 'end-1',
+            name: 'End',
+            type: 'End',
+            position: [200, 0],
+          },
         ],
-        edges: [],
+        edges: [
+          { id: 'e1', source_node_id: 'start-1', target_node_id: 'agent-1', branch: 'default' },
+          { id: 'e2', source_node_id: 'agent-1', target_node_id: 'end-1', branch: 'default' },
+        ],
       },
     };
 
@@ -95,5 +126,41 @@ describe('draft-vs-publish-gate', () => {
 
     expect(publishResult.valid).toBe(true);
     expect(publishResult.errors).toHaveLength(0);
+  });
+
+  it('should block draft save in the UI contract when Start/End count is invalid', () => {
+    const invalidCardinalityWorkflow = {
+      nodes: [
+        {
+          id: 'start-1',
+          name: 'Start 1',
+          type: 'Start' as const,
+          position: [0, 0] as [number, number],
+        },
+        {
+          id: 'start-2',
+          name: 'Start 2',
+          type: 'Start' as const,
+          position: [100, 0] as [number, number],
+        },
+        {
+          id: 'end-1',
+          name: 'End',
+          type: 'End' as const,
+          position: [200, 0] as [number, number],
+        },
+      ],
+      edges: [],
+      metadata: {
+        version: '1',
+        name: 'Invalid Draft',
+        description: 'Draft with invalid Start count',
+      },
+    };
+
+    const draftResult = validateForDraft(invalidCardinalityWorkflow);
+
+    expect(draftResult.canSave).toBe(false);
+    expect(draftResult.errors.length).toBeGreaterThan(0);
   });
 });

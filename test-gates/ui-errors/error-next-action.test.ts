@@ -22,16 +22,31 @@ describe('ui-error-next-action', () => {
       workflow: {
         nodes: [
           {
+            id: 'start-1',
+            name: 'Start',
+            type: 'Start',
+            position: [0, 0],
+          },
+          {
             id: 'agent-1',
             name: 'Agent',
             type: 'Agent',
-            position: [0, 0],
+            position: [100, 0],
             config: {
               // Missing required fields
             },
           },
+          {
+            id: 'end-1',
+            name: 'End',
+            type: 'End',
+            position: [200, 0],
+          },
         ],
-        edges: [],
+        edges: [
+          { id: 'e1', source_node_id: 'start-1', target_node_id: 'agent-1', branch: 'default' },
+          { id: 'e2', source_node_id: 'agent-1', target_node_id: 'end-1', branch: 'default' },
+        ],
       },
     };
 
@@ -54,14 +69,29 @@ describe('ui-error-next-action', () => {
       workflow: {
         nodes: [
           {
+            id: 'start-1',
+            name: 'Start',
+            type: 'Start',
+            position: [0, 0],
+          },
+          {
             id: 'agent-1',
             name: 'Agent',
             type: 'Agent',
-            position: [0, 0],
+            position: [100, 0],
             config: {}, // Missing required fields
           },
+          {
+            id: 'end-1',
+            name: 'End',
+            type: 'End',
+            position: [200, 0],
+          },
         ],
-        edges: [],
+        edges: [
+          { id: 'e1', source_node_id: 'start-1', target_node_id: 'agent-1', branch: 'default' },
+          { id: 'e2', source_node_id: 'agent-1', target_node_id: 'end-1', branch: 'default' },
+        ],
       },
     };
 
@@ -87,14 +117,29 @@ describe('ui-error-next-action', () => {
       workflow: {
         nodes: [
           {
+            id: 'start-1',
+            name: 'Start',
+            type: 'Start',
+            position: [0, 0],
+          },
+          {
             id: 'agent-1',
             name: 'Agent',
             type: 'Agent',
-            position: [0, 0],
+            position: [100, 0],
             config: {},
           },
+          {
+            id: 'end-1',
+            name: 'End',
+            type: 'End',
+            position: [200, 0],
+          },
         ],
-        edges: [],
+        edges: [
+          { id: 'e1', source_node_id: 'start-1', target_node_id: 'agent-1', branch: 'default' },
+          { id: 'e2', source_node_id: 'agent-1', target_node_id: 'end-1', branch: 'default' },
+        ],
       },
     };
 
@@ -115,14 +160,29 @@ describe('ui-error-next-action', () => {
       workflow: {
         nodes: [
           {
+            id: 'start-1',
+            name: 'Start',
+            type: 'Start',
+            position: [0, 0],
+          },
+          {
             id: 'agent-1',
             name: 'Agent',
             type: 'Agent',
-            position: [0, 0],
+            position: [100, 0],
             config: {},
           },
+          {
+            id: 'end-1',
+            name: 'End',
+            type: 'End',
+            position: [200, 0],
+          },
         ],
-        edges: [],
+        edges: [
+          { id: 'e1', source_node_id: 'start-1', target_node_id: 'agent-1', branch: 'default' },
+          { id: 'e2', source_node_id: 'agent-1', target_node_id: 'end-1', branch: 'default' },
+        ],
       },
     };
 

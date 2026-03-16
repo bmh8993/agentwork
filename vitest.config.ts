@@ -17,7 +17,7 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     include: ['test-gates/**/*.{test,spec}.{ts,tsx}', 'packages/**/*.test.ts'],
-    exclude: ['node_modules', 'dist'],
+    exclude: ['node_modules', 'dist', '**/node_modules/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

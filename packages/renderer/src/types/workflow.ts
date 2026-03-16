@@ -13,6 +13,20 @@
 export type NodeType = 'Start' | 'Agent' | 'End';
 
 /**
+ * ADR-0019: Cardinality rules for node types
+ */
+export interface CardinalityRule {
+  min: number;
+  max: number;
+}
+
+export const CARDINALITY_RULES: Record<NodeType, CardinalityRule> = {
+  Start: { min: 1, max: 1 },
+  End: { min: 1, max: 1 },
+  Agent: { min: 0, max: Infinity },
+};
+
+/**
  * Node data structure (aligned with v1 schema)
  */
 export interface NodeData {

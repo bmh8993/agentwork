@@ -1,13 +1,13 @@
 # ADR Index and Status Board
 
-- Date: 2026-03-13
+- Date: 2026-03-16
 - Status: Active
 - Scope: `docs/adr/*`
 
 ## 1) Summary
 
-1. Total ADR: `18`
-2. `Accepted`: `12`
+1. Total ADR: `19`
+2. `Accepted`: `13`
 3. `Superseded`: `6`
 4. `Proposed`: `0`
 
@@ -27,6 +27,7 @@
 | `ADR-0016` | 2026-03-12 | MVP 플러그인 설치 채널(Local + npm) 지원 |
 | `ADR-0017` | 2026-03-12 | Agent 카드 중심 UX와 채팅 구체화 플로우 |
 | `ADR-0018` | 2026-03-12 | Action 텍스트 중심 워크플로우 모델 (Condition 제거) |
+| `ADR-0019` | 2026-03-14 | Start/End 각각 1개 고정과 구조 오류 호환 정책 |
 
 ## 3) Superseded
 
