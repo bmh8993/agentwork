@@ -21,7 +21,7 @@ const NODE_TEMPLATES: Array<{
 ];
 
 export function NodePalette() {
-  const { addNode, readOnlyMode, canAddNodeType, nodes } = useWorkflowStore();
+  const { addNode, readOnlyMode, canAddNodeType } = useWorkflowStore();
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const handleAddNode = useCallback(

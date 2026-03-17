@@ -20,7 +20,6 @@ import {
   addPublishRequiredFieldErrors,
   hasUnsupportedNodes,
   addCardinalityReadOnlyFlags,
-  addCardinalityWarnings,
   addCardinalityErrors,
 } from '@opencode/skill-domain'
 
