@@ -22,13 +22,22 @@ import {
 import '@xyflow/react/dist/style.css';
 import { useWorkflowStore } from '../store/workflowStore';
 import { nodeTypes } from './nodes';
+import { extractPositionPatches } from '../lib/workflowCanvasPositionSync';
 
 interface WorkflowCanvasProps {
   onNodeClick?: (nodeId: string) => void;
 }
 
 export function WorkflowCanvas({ onNodeClick }: WorkflowCanvasProps) {
-  const { nodes, edges, addEdge: storeAddEdge, deleteNode: storeDeleteNode, readOnlyMode, canDeleteNode } = useWorkflowStore();
+  const {
+    nodes,
+    edges,
+    addEdge: storeAddEdge,
+    deleteNode: storeDeleteNode,
+    updateNode,
+    readOnlyMode,
+    canDeleteNode,
+  } = useWorkflowStore();
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const flowEdgeData: Edge[] = edges.map((edge) => ({
     id: edge.id,
@@ -47,6 +56,17 @@ export function WorkflowCanvas({ onNodeClick }: WorkflowCanvasProps) {
   );
 
   const [flowEdges, setFlowEdges, onEdgesChange] = useEdgesState(flowEdgeData);
+
+  const onNodesChangeHandler = useCallback(
+    (changes: Parameters<typeof onNodesChange>[0]) => {
+      onNodesChange(changes)
+
+      for (const patch of extractPositionPatches(changes)) {
+        updateNode(patch.id, { position: patch.position })
+      }
+    },
+    [onNodesChange, updateNode]
+  )
 
   // Sync store nodes to React Flow when store changes
   useEffect(() => {
@@ -131,7 +151,7 @@ export function WorkflowCanvas({ onNodeClick }: WorkflowCanvasProps) {
       <ReactFlow
         nodes={flowNodes}
         edges={flowEdges}
-        onNodesChange={readOnlyMode ? undefined : onNodesChange}
+        onNodesChange={readOnlyMode ? undefined : onNodesChangeHandler}
         onEdgesChange={readOnlyMode ? undefined : onEdgesChange}
         onConnect={readOnlyMode ? undefined : onConnect}
         onNodeClick={onNodeClickHandler}

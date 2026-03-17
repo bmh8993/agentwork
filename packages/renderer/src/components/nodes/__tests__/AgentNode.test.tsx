@@ -3,7 +3,7 @@
  * ADR-0020/0021: Knowledge and Tool refs are now arrays
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ReactFlowProvider } from '@xyflow/react';
 import { AgentNode } from '../AgentNode';
@@ -29,14 +29,14 @@ describe('AgentNode', () => {
       },
     };
 
-    render(<AgentNode data={mockNode} id="agent-1" />, { wrapper: TestWrapper });
+    render(<AgentNode {...({ data: mockNode, id: 'agent-1' } as any)} />, { wrapper: TestWrapper });
 
     // Check that knowledge refs are displayed
-    expect(screen.getByText(/kb-refund-policy/)).toBeInTheDocument();
-    expect(screen.getByText(/kb-api-guide/)).toBeInTheDocument();
+    expect(screen.getByText(/kb-refund-policy/)).toBeTruthy();
+    expect(screen.getByText(/kb-api-guide/)).toBeTruthy();
 
     // Check that tool refs are displayed
-    expect(screen.getByText(/tool-file-search/)).toBeInTheDocument();
+    expect(screen.getByText(/tool-file-search/)).toBeTruthy();
   });
 
   it('should display (empty) when refs are missing', () => {
@@ -51,7 +51,7 @@ describe('AgentNode', () => {
       },
     };
 
-    render(<AgentNode data={mockNode} id="agent-2" />, { wrapper: TestWrapper });
+    render(<AgentNode {...({ data: mockNode, id: 'agent-2' } as any)} />, { wrapper: TestWrapper });
 
     // Should show empty placeholders for both Knowledge and Tool
     const emptyElements = screen.getAllByText(/\(empty\)/);
@@ -72,7 +72,7 @@ describe('AgentNode', () => {
       },
     };
 
-    render(<AgentNode data={mockNode} id="agent-3" />, { wrapper: TestWrapper });
+    render(<AgentNode {...({ data: mockNode, id: 'agent-3' } as any)} />, { wrapper: TestWrapper });
 
     // Should show empty placeholders for both Knowledge and Tool
     const emptyElements = screen.getAllByText(/\(empty\)/);
