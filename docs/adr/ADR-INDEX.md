@@ -1,13 +1,13 @@
 # ADR Index and Status Board
 
-- Date: 2026-03-16
+- Date: 2026-03-17
 - Status: Active
 - Scope: `docs/adr/*`
 
 ## 1) Summary
 
-1. Total ADR: `19`
-2. `Accepted`: `13`
+1. Total ADR: `21`
+2. `Accepted`: `15`
 3. `Superseded`: `6`
 4. `Proposed`: `0`
 
@@ -28,6 +28,8 @@
 | `ADR-0017` | 2026-03-12 | Agent 카드 중심 UX와 채팅 구체화 플로우 |
 | `ADR-0018` | 2026-03-12 | Action 텍스트 중심 워크플로우 모델 (Condition 제거) |
 | `ADR-0019` | 2026-03-14 | Start/End 각각 1개 고정과 구조 오류 호환 정책 |
+| `ADR-0020` | 2026-03-17 | AgentNode 조합 단위와 Action 소유권 명확화 |
+| `ADR-0021` | 2026-03-17 | AgentNode 리소스 참조 필드 shape 고정 |
 
 ## 3) Superseded
 

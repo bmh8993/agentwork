@@ -185,3 +185,113 @@ describe('run-gate-strict: Complete validation pass', () => {
     expect(result.warnings).toHaveLength(0)
   })
 })
+
+describe('run-gate-strict: ADR-0020/0021 resource refs optional', () => {
+  it('run succeeds with action_text and done_criteria, no resource refs', () => {
+    const data = {
+      version: '1',
+      skill: {
+        id: 'test-skill',
+        name: 'Test',
+        description: 'Test skill',
+      },
+      workflow: {
+        nodes: [
+          { id: 'n1', name: 'Start', type: 'Start', position: [0, 0], config: {} },
+          {
+            id: 'agent1',
+            name: 'Test Agent',
+            type: 'Agent',
+            position: [100, 0],
+            config: {
+              action_text: 'Do the task',
+              done_criteria: 'Task complete',
+              // knowledge_refs and tool_refs absent - should still pass
+            },
+          },
+          { id: 'n2', name: 'End', type: 'End', position: [200, 0], config: {} },
+        ],
+        edges: [],
+      },
+    }
+
+    const result = validateRun(data)
+
+    expect(result.valid).toBe(true)
+    expect(result.errors).toHaveLength(0)
+  })
+
+  it('run succeeds with action_text, done_criteria, and empty resource ref arrays', () => {
+    const data = {
+      version: '1',
+      skill: {
+        id: 'test-skill',
+        name: 'Test',
+        description: 'Test skill',
+      },
+      workflow: {
+        nodes: [
+          { id: 'n1', name: 'Start', type: 'Start', position: [0, 0], config: {} },
+          {
+            id: 'agent1',
+            name: 'Test Agent',
+            type: 'Agent',
+            position: [100, 0],
+            config: {
+              action_text: 'Do the task',
+              done_criteria: 'Task complete',
+              knowledge_refs: [],
+              tool_refs: [],
+            },
+          },
+          { id: 'n2', name: 'End', type: 'End', position: [200, 0], config: {} },
+        ],
+        edges: [],
+      },
+    }
+
+    const result = validateRun(data)
+
+    expect(result.valid).toBe(true)
+    expect(result.errors).toHaveLength(0)
+  })
+
+  it('run succeeds with action_text, done_criteria, and populated resource refs', () => {
+    const data = {
+      version: '1',
+      skill: {
+        id: 'test-skill',
+        name: 'Test',
+        description: 'Test skill',
+      },
+      workflow: {
+        nodes: [
+          { id: 'n1', name: 'Start', type: 'Start', position: [0, 0], config: {} },
+          {
+            id: 'agent1',
+            name: 'Test Agent',
+            type: 'Agent',
+            position: [100, 0],
+            config: {
+              action_text: 'Do the task',
+              done_criteria: 'Task complete',
+              knowledge_refs: [
+                'kb-knowledge-base',
+              ],
+              tool_refs: [
+                'tool-search',
+              ],
+            },
+          },
+          { id: 'n2', name: 'End', type: 'End', position: [200, 0], config: {} },
+        ],
+        edges: [],
+      },
+    }
+
+    const result = validateRun(data)
+
+    expect(result.valid).toBe(true)
+    expect(result.errors).toHaveLength(0)
+  })
+})

@@ -26,6 +26,8 @@
 10. [ADR-0016: Install Channels (local folder + npm)](../adr/ADR-0016-mvp-plugin-install-channels-local-and-npm.md)
 11. [ADR-0017: Agent Card UX and Draft/Publish Gate](../adr/ADR-0017-agent-card-ux-and-chat-refinement.md)
 12. [ADR-0018: Action-only Workflow Model](../adr/ADR-0018-action-only-workflow-model.md)
+13. [ADR-0020: AgentNode Composition and Action Ownership](../adr/ADR-0020-agentnode-composition-and-action-ownership.md)
+14. [ADR-0021: AgentNode Resource Reference Shape](../adr/ADR-0021-agentnode-resource-reference-shape.md)
 
 ## 3) Implementation Specs
 

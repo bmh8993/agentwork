@@ -23,6 +23,8 @@
 10. ADR-0016 (설치 채널: local folder + npm)
 11. ADR-0017 (Agent 카드 UX, Draft/Publish 경계)
 12. ADR-0018 (Action-only 워크플로우)
+13. ADR-0020 (AgentNode 조합 단위와 Action 소유권)
+14. ADR-0021 (AgentNode 리소스 참조 필드 shape)
 
 ## 3. Tech Stack Selection
 
@@ -69,6 +71,39 @@
    1. `Load(Open)`: read-only compatibility 허용(원본 보존)
    2. `Draft Save`: 구조 무결성 검증
    3. `Publish/Run`: strict schema + domain 검증
+6. AgentNode interpretation (ADR-0020):
+   1. `Agent` 타입 노드는 도메인 모델에서 `AgentNode`로 해석한다.
+   2. `Action`과 `Done Criteria`는 `Agent`가 아니라 `AgentNode` 설정에 귀속한다.
+   3. UX 용어 `Agent 카드`는 유지하되, 내부 구현에서는 `AgentNode` 의미로 사용한다.
+7. Resource reference shape (ADR-0021):
+   1. AgentNode Knowledge/Tool 참조는 `knowledge_refs`, `tool_refs` 배열로 저장한다.
+   2. 단일 문자열 필드 `knowledge`, `tool`은 임시 구현 표현으로 간주한다.
+   3. `knowledge_refs`와 `tool_refs`의 각 값은 stable name/id 참조를 사용한다.
+   4. 빈 값의 기본값은 `[]`이다.
+
+## 4.1. Type Contract: NodeData.config Shape
+
+`Agent` 타입 노드의 `config` 객체는 다음 shape를 따른다 (ADR-0020, ADR-0021 기준):
+
+```typescript
+interface AgentNodeConfig {
+  // Action과 Done Criteria는 node-level 소유권 (ADR-0020)
+  action_text: string;           // 필수 (Publish gate)
+  done_criteria: string;         // 필수 (Publish gate)
+
+  // Knowledge/Tool 참조는 배열 shape (ADR-0021)
+  knowledge_refs: string[];      // optional, 기본값 []
+  tool_refs: string[];           // optional, 기본값 []
+
+  // UI 표시용 필수 슬롯 (ADR-0017)
+  // 현재 MVP에서는 위 필드들이 Agent 카드의 필수 슬롯에 해당
+}
+```
+
+중요 사항:
+1. `action_text`, `done_criteria`는 Publish 시 필수 값이다.
+2. `knowledge_refs`, `tool_refs`는 optional이며, 빈 배열 `[]`이 기본값이다.
+3. 단일 문자열 필드 `knowledge`, `tool`은 전환 대상이며 canonical이 아니다.
 
 ## 5. Module Boundaries
 

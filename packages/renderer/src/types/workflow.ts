@@ -4,6 +4,8 @@
  * Aligned with:
  * - ADR-0018: Action-only Workflow Model
  * - ADR-0015: Node Type Extension Policy
+ * - ADR-0020: AgentNode Composition and Action Ownership
+ * - ADR-0021: AgentNode Resource Reference Shape
  * - SKILL.json v1 Schema
  */
 
@@ -28,6 +30,10 @@ export const CARDINALITY_RULES: Record<NodeType, CardinalityRule> = {
 
 /**
  * Node data structure (aligned with v1 schema)
+ *
+ * For Agent type nodes (AgentNode in ADR-0020):
+ * - Action and Done Criteria are owned by the AgentNode, not by Agent
+ * - Knowledge and Tool references are arrays of stable names/ids (ADR-0021)
  */
 export interface NodeData {
   [key: string]: unknown;
@@ -36,12 +42,12 @@ export interface NodeData {
   type: NodeType;
   position: [number, number];  // v1 schema: required position array [x, y]
 
-  // Agent-specific config (ADR-0017)
+  // AgentNode-specific config (ADR-0020, ADR-0021)
   config?: {
-    knowledge?: string;
-    tool?: string;
-    action_text?: string;  // Required for Publish
-    done_criteria?: string;  // Required for Publish
+    knowledge_refs?: string[];  // ADR-0021: Knowledge resource references
+    tool_refs?: string[];  // ADR-0021: Tool capability references
+    action_text?: string;  // ADR-0020: Action owned by AgentNode, required for Publish
+    done_criteria?: string;  // ADR-0020: Done Criteria owned by AgentNode, required for Publish
   };
 }
 

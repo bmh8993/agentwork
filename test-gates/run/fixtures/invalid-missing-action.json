@@ -21,8 +21,8 @@
         "type": "Agent",
         "position": [300, 100],
         "config": {
-          "knowledge": "Test knowledge",
-          "tool": "Test tool",
+          "knowledge_refs": ["kb-test-knowledge"],
+          "tool_refs": ["tool-test-tool"],
           "done_criteria": "Task is complete"
         }
       },

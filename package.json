@@ -4,7 +4,9 @@
   "private": true,
   "description": "OpenCode Skill Plugin Development Workspace",
   "scripts": {
-    "test": "vitest",
+    "test": "pnpm run test:root && pnpm run test:renderer",
+    "test:root": "vitest",
+    "test:renderer": "pnpm --filter @opencode/renderer test -- --run",
     "test:contract:schema": "vitest run test-gates/contract/schema.test.ts",
     "test:contract:load": "vitest run test-gates/contract/load.test.ts",
     "test:contract:draft": "vitest run test-gates/contract/draft.test.ts",
@@ -22,15 +24,22 @@
     "dev:electron": "pnpm --filter '@opencode/app' build && NODE_ENV=development pnpm --filter '@opencode/app' start",
     "build:app": "pnpm --filter '@opencode/renderer' build && pnpm --filter '@opencode/app' build"
   },
-  "keywords": ["opencode", "skill", "workflow", "agent"],
+  "keywords": [
+    "opencode",
+    "skill",
+    "workflow",
+    "agent"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
     "@types/node": "^20.11.0",
     "@typescript-eslint/eslint-plugin": "^8.46.1",
     "@typescript-eslint/parser": "^8.46.1",
     "@vitejs/plugin-react": "^6.0.1",
     "eslint": "^9.38.0",
+    "jsdom": "^29.0.0",
     "typescript": "^5.3.3",
     "vite": "^8.0.0",
     "vitest": "^4.1.0"

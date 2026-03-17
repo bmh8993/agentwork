@@ -185,3 +185,50 @@ describe('publish-gate-required-fields: Multiple agents', () => {
     expect(requiredFieldErrors.length).toBe(2) // One for Agent 1 (missing done_criteria), one for Agent 2 (both missing)
   })
 })
+
+describe('publish-gate-required-fields: ADR-0020/0021 resource refs optional', () => {
+  it('publish succeeds with action_text and done_criteria, no resource refs', () => {
+    const data = createSkillWithAgent({
+      action_text: 'Do the task',
+      done_criteria: 'Task complete',
+      // knowledge_refs and tool_refs absent - should still pass
+    })
+
+    const result = validatePublish(data)
+
+    expect(result.valid).toBe(true)
+    expect(result.errors).toHaveLength(0)
+  })
+
+  it('publish succeeds with action_text, done_criteria, and empty resource ref arrays', () => {
+    const data = createSkillWithAgent({
+      action_text: 'Do the task',
+      done_criteria: 'Task complete',
+      knowledge_refs: [],
+      tool_refs: [],
+    })
+
+    const result = validatePublish(data)
+
+    expect(result.valid).toBe(true)
+    expect(result.errors).toHaveLength(0)
+  })
+
+  it('publish succeeds with action_text, done_criteria, and populated resource refs', () => {
+    const data = createSkillWithAgent({
+      action_text: 'Do the task',
+      done_criteria: 'Task complete',
+      knowledge_refs: [
+        'kb-knowledge-base',
+      ],
+      tool_refs: [
+        'tool-search',
+      ],
+    })
+
+    const result = validatePublish(data)
+
+    expect(result.valid).toBe(true)
+    expect(result.errors).toHaveLength(0)
+  })
+})

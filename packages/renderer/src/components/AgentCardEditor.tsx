@@ -2,12 +2,18 @@
  * Agent Card Editor Component
  *
  * Form for editing Agent node required slots:
- * - Knowledge (optional)
- * - Tool (optional)
+ * - Knowledge refs (optional, array)
+ * - Tool refs (optional, array)
  * - Action (required for Publish)
  * - Done Criteria (required for Publish)
  *
  * ADR-0017: Agent Card UX and Draft/Publish Gate
+ * ADR-0021: AgentNode Resource Reference Shape (arrays)
+ *
+ * UX STRATEGY (Option A):
+ * - Single text input per field with comma-separated values
+ * - Convert to/from arrays on form submit/load
+ * - Store canonical arrays in node config
  */
 
 import { useForm } from 'react-hook-form';
@@ -16,11 +22,36 @@ import { z } from 'zod';
 import { useWorkflowStore } from '../store/workflowStore';
 import type { NodeData } from '../types/workflow';
 
+/**
+ * Helper: Convert comma-separated string to array of trimmed refs
+ * Handles empty strings and extra whitespace
+ */
+function commaStringToArray(value: string): string[] {
+  if (!value || value.trim() === '') {
+    return []
+  }
+  return value
+    .split(',')
+    .map((ref) => ref.trim())
+    .filter((ref) => ref.length > 0)
+}
+
+/**
+ * Helper: Convert array to comma-separated string for form display
+ */
+function arrayToCommaString(array?: string[]): string {
+  if (!array || array.length === 0) {
+    return ''
+  }
+  return array.join(', ')
+}
+
 // Form schema - Action and Done Criteria are required for Publish
+// UX: knowledge_refs_input and tool_refs_input are comma-separated strings
 const agentCardSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  knowledge: z.string().optional(),
-  tool: z.string().optional(),
+  knowledge_refs_input: z.string().optional(),
+  tool_refs_input: z.string().optional(),
   action_text: z.string().min(1, { message: 'Action is required for Publish' }),
   done_criteria: z.string().min(1, { message: 'Done Criteria is required for Publish' }),
 });
@@ -43,19 +74,25 @@ export function AgentCardEditor({ node, onClose }: AgentCardEditorProps) {
     resolver: zodResolver(agentCardSchema),
     defaultValues: {
       name: node.name || '',
-      knowledge: node.config?.knowledge || '',
-      tool: node.config?.tool || '',
+      // Convert canonical arrays to comma-separated strings for form
+      knowledge_refs_input: arrayToCommaString(node.config?.knowledge_refs),
+      tool_refs_input: arrayToCommaString(node.config?.tool_refs),
       action_text: node.config?.action_text || '',
       done_criteria: node.config?.done_criteria || '',
     },
   });
 
   const onSubmit = (data: AgentCardFormData) => {
+    // Convert comma-separated strings to canonical arrays
+    const knowledge_refs = commaStringToArray(data.knowledge_refs_input || '')
+    const tool_refs = commaStringToArray(data.tool_refs_input || '')
+
     updateNode(node.id, {
       name: data.name,
       config: {
-        knowledge: data.knowledge,
-        tool: data.tool,
+        // Store canonical arrays (ADR-0021)
+        knowledge_refs,
+        tool_refs,
         action_text: data.action_text,
         done_criteria: data.done_criteria,
       },
@@ -154,7 +191,7 @@ export function AgentCardEditor({ node, onClose }: AgentCardEditorProps) {
             )}
           </div>
 
-          {/* Knowledge (Optional) */}
+          {/* Knowledge refs (Optional) */}
           <div>
             <label
               style={{
@@ -165,12 +202,11 @@ export function AgentCardEditor({ node, onClose }: AgentCardEditorProps) {
                 marginBottom: '6px',
               }}
             >
-              📚 Knowledge <span style={{ color: '#737373', fontWeight: '400' }}>(optional)</span>
+              📚 Knowledge Refs <span style={{ color: '#737373', fontWeight: '400' }}>(optional, comma-separated)</span>
             </label>
-            <textarea
-              {...register('knowledge')}
-              placeholder="Knowledge base or context for this agent"
-              rows={3}
+            <input
+              {...register('knowledge_refs_input')}
+              placeholder="e.g., kb-refund-policy, kb-shipping-guide"
               style={{
                 width: '100%',
                 padding: '10px 12px',
@@ -179,12 +215,11 @@ export function AgentCardEditor({ node, onClose }: AgentCardEditorProps) {
                 borderRadius: '6px',
                 color: '#e5e5e5',
                 fontSize: '14px',
-                resize: 'vertical',
               }}
             />
           </div>
 
-          {/* Tool (Optional) */}
+          {/* Tool refs (Optional) */}
           <div>
             <label
               style={{
@@ -195,11 +230,11 @@ export function AgentCardEditor({ node, onClose }: AgentCardEditorProps) {
                 marginBottom: '6px',
               }}
             >
-              🔧 Tool <span style={{ color: '#737373', fontWeight: '400' }}>(optional)</span>
+              🔧 Tool Refs <span style={{ color: '#737373', fontWeight: '400' }}>(optional, comma-separated)</span>
             </label>
             <input
-              {...register('tool')}
-              placeholder="Tool name (e.g., file_search, code_editor)"
+              {...register('tool_refs_input')}
+              placeholder="e.g., tool-file-search, tool-api-client"
               style={{
                 width: '100%',
                 padding: '10px 12px',

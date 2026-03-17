@@ -18,6 +18,16 @@ export function AgentNode({ data }: NodeProps) {
   const hasDoneCriteria = !!doneCriteria && doneCriteria.trim().length > 0;
   const isComplete = hasActionText && hasDoneCriteria;
 
+  // ADR-0020/0021: Knowledge and Tool refs are now arrays
+  const knowledgeRefs = nodeData.config?.knowledge_refs;
+  const toolRefs = nodeData.config?.tool_refs;
+  const knowledgeDisplay = knowledgeRefs && knowledgeRefs.length > 0
+    ? knowledgeRefs.join(', ')
+    : '(empty)';
+  const toolDisplay = toolRefs && toolRefs.length > 0
+    ? toolRefs.join(', ')
+    : '(empty)';
+
   return (
     <div
       style={{
@@ -66,14 +76,14 @@ export function AgentNode({ data }: NodeProps) {
       <div style={{ fontSize: '12px', opacity: 0.9 }}>
         <div style={{ marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
           <span>📚 Knowledge:</span>
-          <span style={{ opacity: nodeData.config?.knowledge ? 1 : 0.5 }}>
-            {nodeData.config?.knowledge || '(empty)'}
+          <span style={{ opacity: knowledgeRefs && knowledgeRefs.length > 0 ? 1 : 0.5 }}>
+            {knowledgeDisplay}
           </span>
         </div>
         <div style={{ marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
           <span>🔧 Tool:</span>
-          <span style={{ opacity: nodeData.config?.tool ? 1 : 0.5 }}>
-            {nodeData.config?.tool || '(empty)'}
+          <span style={{ opacity: toolRefs && toolRefs.length > 0 ? 1 : 0.5 }}>
+            {toolDisplay}
           </span>
         </div>
         <div style={{ marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
