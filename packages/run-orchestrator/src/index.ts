@@ -10,26 +10,23 @@ import {
   type ValidationResult,
   type ValidationError,
 } from '@opencode/skill-schema'
-
-// Run session state
-export type RunSessionState = 'idle' | 'validated' | 'running' | 'completed' | 'failed'
-
-// Run session
-export interface RunSession {
-  id: string
-  state: RunSessionState
-  validatedAt?: Date
-  startedAt?: Date
-  completedAt?: Date
-  errors: ValidationError[]
-}
-
-// Pre-flight validation result
-export interface PreFlightValidationResult {
-  canRun: boolean
-  errors: ValidationError[]
-  warnings: string[]
-}
+import {
+  createRuntimeError,
+  type NodeExecutionResult,
+  type PreFlightValidationResult,
+  type RunSession,
+} from './execution-contract'
+import {
+  resolveNodeExecutionAdapter,
+  type AgentExecutorCatalog,
+} from './agent-executor-catalog'
+import { executeNode, type NodeExecutionAdapter } from './node-executor'
+import {
+  buildPredecessorMap,
+  getReadyNodes,
+  getWorkflowEdges,
+  getWorkflowNodes,
+} from './workflow-graph'
 
 /**
  * Perform pre-flight validation before starting a run
@@ -47,7 +44,7 @@ export function performPreFlightValidation(
   // Call validateRun from skill-schema
   // This enforces:
   // 1. Schema validation
-  // 2. Publish required fields (action_text, done_criteria)
+  // 2. Publish required fields (agent_ref, action_text, done_criteria)
   // 3. Unsupported node type blocking
   const validationResult: ValidationResult = validateRun(workflowData)
 
@@ -75,6 +72,7 @@ export function createRunSession(id: string): RunSession {
     id,
     state: 'idle',
     errors: [],
+    nodeResults: [],
   }
 }
 
@@ -141,7 +139,9 @@ export function startRunSession(session: RunSession): RunSession {
  */
 export async function simulateRunExecution(
   session: RunSession,
-  workflowData: unknown
+  workflowData: unknown,
+  adapter?: NodeExecutionAdapter,
+  agentCatalog?: AgentExecutorCatalog
 ): Promise<RunSession> {
   // Only allow execution if validated
   if (session.state !== 'validated' && session.state !== 'running') {
@@ -162,13 +162,109 @@ export async function simulateRunExecution(
     }
   }
 
-  // Simulate successful execution
+  const nodes = getWorkflowNodes(workflowData)
+  const edges = getWorkflowEdges(workflowData)
+
+  if (nodes.length === 0) {
+    return {
+      ...session,
+      state: 'failed',
+      errors: [
+        ...session.errors,
+        createRuntimeError('Cannot execute run: workflow has no nodes', 'Add workflow nodes before running'),
+      ],
+    }
+  }
+
+  const predecessors = buildPredecessorMap(nodes, edges)
+
+  const pending = new Set(nodes.map((node) => node.id))
+  const executed = new Map<string, NodeExecutionResult>()
+  const runtimeErrors: ValidationError[] = [...session.errors]
+  const nodeResults: NodeExecutionResult[] = []
+
+  while (pending.size > 0) {
+    const readyNodes = getReadyNodes(nodes.filter((node) => pending.has(node.id)), predecessors, new Set(executed.keys()))
+
+    if (readyNodes.length === 0) {
+      return {
+        ...session,
+        state: 'failed',
+        errors: [
+          ...runtimeErrors,
+          createRuntimeError('Cannot execute run: workflow graph has unresolved dependencies', 'Check workflow edges for cycles or disconnected dependencies'),
+        ],
+        nodeResults,
+      }
+    }
+
+    const batchResults = await Promise.all(
+      readyNodes.map(async (node) => {
+        const deps = predecessors.get(node.id) ?? []
+        const predecessorResults = deps
+          .map((depId) => executed.get(depId))
+          .filter((result): result is NodeExecutionResult => result !== undefined)
+        const resolvedAdapter = resolveNodeExecutionAdapter(node, agentCatalog) ?? adapter
+        return executeNode(node, predecessorResults, {
+          adapter: resolvedAdapter,
+          context: {
+            sessionId: session.id,
+            workflowName: typeof (workflowData as Record<string, unknown>)?.skill === 'object' && (workflowData as Record<string, unknown>)?.skill !== null
+              ? ((workflowData as Record<string, unknown>).skill as Record<string, unknown>).name as string | undefined
+              : undefined,
+          },
+        })
+      })
+    )
+
+    for (const result of batchResults) {
+      pending.delete(result.nodeId)
+      executed.set(result.nodeId, result)
+      nodeResults.push(result)
+
+      if (result.status === 'failed') {
+        runtimeErrors.push(
+          createRuntimeError(
+            result.error ?? `Agent "${result.nodeName}" execution failed`,
+            'Inspect branch outputs and retry or adjust the agent configuration'
+          )
+        )
+      }
+    }
+  }
+
   return {
     ...session,
     state: 'completed',
     completedAt: new Date(),
+    errors: runtimeErrors,
+    nodeResults,
   }
 }
 
 // Re-export types
 export type { ValidationError }
+export type {
+  BranchOutput,
+  NodeExecutionResult,
+  NodeExecutionStatus,
+  PreFlightValidationResult,
+  RunSession,
+  RunSessionState,
+} from './execution-contract'
+export { executeNode } from './node-executor'
+export {
+  createCatalogKey,
+  createExecutorCatalogFromAgentCatalog,
+  resolveNodeExecutionAdapter,
+} from './agent-executor-catalog'
+export type {
+  AgentExecutorCatalog,
+  AgentCatalogLike,
+  CatalogAgentLike,
+} from './agent-executor-catalog'
+export type {
+  ExecutionContext,
+  NodeExecutionAdapter,
+  NodeExecutionAdapterResult,
+} from './node-executor'

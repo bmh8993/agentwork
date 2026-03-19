@@ -58,7 +58,7 @@ describe('ui-error-next-action', () => {
     const publishError = result.errors.find((e) => e.code === 'publish_required_field_missing');
     expect(publishError).toBeDefined();
     expect(publishError?.next_action).toBeTruthy();
-    expect(publishError?.next_action).toMatch(/action_text|done_criteria/);
+    expect(publishError?.next_action).toMatch(/agent_ref|action_text|done_criteria/);
   });
 
   it('should include next_action in all validation errors', () => {
@@ -79,7 +79,7 @@ describe('ui-error-next-action', () => {
             name: 'Agent',
             type: 'Agent',
             position: [100, 0],
-            config: {}, // Missing required fields
+            config: {}, // Missing required publish fields
           },
           {
             id: 'end-1',

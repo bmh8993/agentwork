@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://opencode.ai/schemas/skill-v1.json",
   "title": "SKILL.json v1",
-  "description": "Schema for SKILL.json version 1 - OpenCode Skill Plugin canonical format",
+  "description": "Schema for SKILL.json version 1 - OpenCode Skill Plugin canonical format\n\nAligned with:\n- ADR-0022: Platform-neutral Assistant Package Canonical and AgentNode Reference\n- ADR-0023: Parallel AgentNode Execution via Graph Fan-out and Fan-in",
   "type": "object",
   "required": ["version", "skill", "workflow"],
   "properties": {
@@ -129,7 +129,37 @@
         },
         "config": {
           "type": "object",
-          "description": "Node-specific configuration"
+          "description": "Node-specific configuration\n\nADR-0022/0023: For Agent type nodes, config contains:\n- agent_ref: Reference to reusable Agent in package catalog\n- action_text: Action owned by AgentNode (required for Publish)\n- done_criteria: Done Criteria owned by AgentNode (required for Publish)\n- join_policy: Join policy for parallel execution (default: 'all')",
+          "properties": {
+            "agent_ref": {
+              "type": "object",
+              "description": "ADR-0022: Reference to reusable Agent in package catalog",
+              "properties": {
+                "package": {
+                  "type": "string",
+                  "description": "Package identifier"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Agent name within package"
+                }
+              },
+              "required": ["package", "name"]
+            },
+            "action_text": {
+              "type": "string",
+              "description": "ADR-0020/0022: Action owned by AgentNode (required for Publish)"
+            },
+            "done_criteria": {
+              "type": "string",
+              "description": "ADR-0020/0022: Done Criteria owned by AgentNode (required for Publish)"
+            },
+            "join_policy": {
+              "type": "string",
+              "enum": ["all"],
+              "description": "ADR-0023: Join policy for parallel execution (default: 'all' - all predecessors must complete)"
+            }
+          }
         }
       }
     },

@@ -1,0 +1,79 @@
+{
+  "version": "1",
+  "skill": {
+    "id": "parallel-workflow",
+    "name": "Parallel Workflow",
+    "description": "Tests non-fatal branch failure"
+  },
+  "workflow": {
+    "nodes": [
+      {
+        "id": "start",
+        "name": "Start",
+        "type": "Start",
+        "position": [0, 0],
+        "config": {}
+      },
+      {
+        "id": "planner",
+        "name": "Planner",
+        "type": "Agent",
+        "position": [100, 0],
+        "config": {
+          "agent_ref": { "package": "test-package", "name": "planner" },
+          "action_text": "Plan parallel work",
+          "done_criteria": "Branches ready"
+        }
+      },
+      {
+        "id": "branch-a",
+        "name": "Branch A",
+        "type": "Agent",
+        "position": [200, -100],
+        "config": {
+          "agent_ref": { "package": "test-package", "name": "worker-a" },
+          "action_text": "Analyze branch A",
+          "done_criteria": "A done"
+        }
+      },
+      {
+        "id": "branch-b",
+        "name": "Branch B",
+        "type": "Agent",
+        "position": [200, 100],
+        "config": {
+          "agent_ref": { "package": "test-package", "name": "worker-b" },
+          "action_text": "[fail] Analyze branch B",
+          "done_criteria": "B done"
+        }
+      },
+      {
+        "id": "judge",
+        "name": "Judge",
+        "type": "Agent",
+        "position": [300, 0],
+        "config": {
+          "agent_ref": { "package": "test-package", "name": "judge" },
+          "action_text": "Merge branch outputs",
+          "done_criteria": "Merged",
+          "join_policy": "all"
+        }
+      },
+      {
+        "id": "end",
+        "name": "End",
+        "type": "End",
+        "position": [400, 0],
+        "config": {}
+      }
+    ],
+    "edges": [
+      { "id": "e1", "source_node_id": "start", "target_node_id": "planner", "branch": "default" },
+      { "id": "e2", "source_node_id": "planner", "target_node_id": "branch-a", "branch": "default" },
+      { "id": "e3", "source_node_id": "planner", "target_node_id": "branch-b", "branch": "default" },
+      { "id": "e4", "source_node_id": "branch-a", "target_node_id": "judge", "branch": "default" },
+      { "id": "e5", "source_node_id": "branch-b", "target_node_id": "judge", "branch": "default" },
+      { "id": "e6", "source_node_id": "judge", "target_node_id": "end", "branch": "default" }
+    ]
+  }
+}

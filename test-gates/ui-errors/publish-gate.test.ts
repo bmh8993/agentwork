@@ -33,6 +33,7 @@ describe('publish-gate-required-fields', () => {
             type: 'Agent',
             position: [100, 0],
             config: {
+              agent_ref: { package: 'test-package', name: 'test-agent' },
               action_text: 'Process the data',
               done_criteria: 'Output file exists',
             },
@@ -75,6 +76,7 @@ describe('publish-gate-required-fields', () => {
             type: 'Agent',
             position: [100, 0],
             config: {
+              agent_ref: { package: 'test-package', name: 'test-agent' },
               done_criteria: 'Output file exists',
               // action_text missing
             },
@@ -121,6 +123,7 @@ describe('publish-gate-required-fields', () => {
             type: 'Agent',
             position: [100, 0],
             config: {
+              agent_ref: { package: 'test-package', name: 'test-agent' },
               action_text: 'Process the data',
               // done_criteria missing
             },
@@ -149,7 +152,7 @@ describe('publish-gate-required-fields', () => {
     expect(publishError?.next_action).toContain('done_criteria');
   });
 
-  it('should fail publish validation when both required fields are missing', () => {
+  it('should fail publish validation when required fields are missing', () => {
     const invalidWorkflow = {
       version: '1',
       skill: minimalSkill,
@@ -167,7 +170,7 @@ describe('publish-gate-required-fields', () => {
             type: 'Agent',
             position: [100, 0],
             config: {
-              // Both action_text and done_criteria missing
+              // agent_ref, action_text and done_criteria missing
             },
           },
           {
@@ -234,6 +237,6 @@ describe('publish-gate-required-fields', () => {
     expect(error.code).toBe('publish_required_field_missing');
     expect(error.message_user).toBeTruthy();
     expect(error.next_action).toBeTruthy();
-    expect(error.next_action).toMatch(/action_text|done_criteria/);
+    expect(error.next_action).toMatch(/agent_ref|action_text|done_criteria/);
   });
 });

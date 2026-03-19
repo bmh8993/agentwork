@@ -1,0 +1,5 @@
+{
+  "name": "refund-log",
+  "description": "Writes refund audit logs",
+  "script_ref": "refund-log.sh"
+}

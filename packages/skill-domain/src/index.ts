@@ -75,11 +75,23 @@ export function addReadOnlyCompatibilityFlags(result: ValidationResult, data: un
   return result
 }
 
-// Turn 7: Check Agent node required fields (action_text, done_criteria)
+// Turn 7+: Check Agent node required fields (agent_ref, action_text, done_criteria)
 interface MissingFieldInfo {
   nodeId: string
   nodeName: string
   missingFields: string[]
+}
+
+function hasValidAgentRef(value: unknown): boolean {
+  if (typeof value !== 'object' || value === null) {
+    return false
+  }
+
+  const ref = value as Record<string, unknown>
+  return typeof ref.package === 'string' &&
+    ref.package.trim() !== '' &&
+    typeof ref.name === 'string' &&
+    ref.name.trim() !== ''
 }
 
 export function checkAgentRequiredFields(data: unknown): {
@@ -100,10 +112,13 @@ export function checkAgentRequiredFields(data: unknown): {
     const nodeMissing: string[] = []
 
     if (typeof config !== 'object' || config === null) {
-      // No config at all - both fields missing
-      nodeMissing.push('action_text', 'done_criteria')
+      // No config at all - all publish fields missing
+      nodeMissing.push('agent_ref', 'action_text', 'done_criteria')
     } else {
       const cfg = config as Record<string, unknown>
+      if (!hasValidAgentRef(cfg.agent_ref)) {
+        nodeMissing.push('agent_ref')
+      }
       if (!cfg.action_text || typeof cfg.action_text !== 'string' || cfg.action_text.trim() === '') {
         nodeMissing.push('action_text')
       }

@@ -99,6 +99,10 @@ describe('draft-vs-publish-gate', () => {
             type: 'Agent',
             position: [100, 0],
             config: {
+              agent_ref: {
+                package: 'test-package',
+                name: 'complete-agent',
+              },
               action_text: 'Process data',
               done_criteria: 'Output ready',
             },

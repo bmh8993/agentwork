@@ -7,3 +7,4 @@
 export * from './save'
 export * from './atomic'
 export * from './import'
+export * from './import-package-catalog'

@@ -27,6 +27,10 @@ function createValidSkill() {
           type: 'Agent',
           position: [100, 0],
           config: {
+            agent_ref: {
+              package: 'test-package',
+              name: 'test-agent',
+            },
             action_text: 'Do the task',
             done_criteria: 'Task complete',
           },
@@ -74,6 +78,10 @@ describe('run-gate-strict: Required fields gate', () => {
     const data = createValidSkill()
     // @ts-ignore - modify config for testing
     data.workflow.nodes[1].config = {
+      agent_ref: {
+        package: 'test-package',
+        name: 'test-agent',
+      },
       done_criteria: 'Task complete',
     }
 
@@ -89,6 +97,10 @@ describe('run-gate-strict: Required fields gate', () => {
     const data = createValidSkill()
     // @ts-ignore - modify config for testing
     data.workflow.nodes[1].config = {
+      agent_ref: {
+        package: 'test-package',
+        name: 'test-agent',
+      },
       action_text: 'Do the task',
     }
 
@@ -98,6 +110,20 @@ describe('run-gate-strict: Required fields gate', () => {
 
     const requiredFieldErrors = result.errors.filter((e) => e.code === ERROR_CODES.PUBLISH_REQUIRED_FIELD_MISSING)
     expect(requiredFieldErrors.length).toBeGreaterThan(0)
+  })
+
+  it('missing agent_ref blocks run', () => {
+    const data = createValidSkill()
+    // @ts-ignore
+    data.workflow.nodes[1].config = {
+      action_text: 'Do the task',
+      done_criteria: 'Task complete',
+    }
+
+    const result = validateRun(data)
+
+    expect(result.valid).toBe(false)
+    expect(result.errors.some((e) => e.code === ERROR_CODES.PUBLISH_REQUIRED_FIELD_MISSING)).toBe(true)
   })
 
   it('all required fields present passes validation', () => {
@@ -156,6 +182,10 @@ describe('run-gate-strict: Unsupported nodes', () => {
             type: 'Agent',
             position: [100, 0],
             config: {
+              agent_ref: {
+                package: 'test-package',
+                name: 'test-agent',
+              },
               action_text: 'Do task',
               done_criteria: 'Task done',
             },
@@ -186,8 +216,8 @@ describe('run-gate-strict: Complete validation pass', () => {
   })
 })
 
-describe('run-gate-strict: ADR-0020/0021 resource refs optional', () => {
-  it('run succeeds with action_text and done_criteria, no resource refs', () => {
+describe('run-gate-strict: ADR-0022 agent_ref required', () => {
+  it('run succeeds with agent_ref, action_text, and done_criteria', () => {
     const data = {
       version: '1',
       skill: {
@@ -204,9 +234,12 @@ describe('run-gate-strict: ADR-0020/0021 resource refs optional', () => {
             type: 'Agent',
             position: [100, 0],
             config: {
+              agent_ref: {
+                package: 'test-package',
+                name: 'test-agent',
+              },
               action_text: 'Do the task',
               done_criteria: 'Task complete',
-              // knowledge_refs and tool_refs absent - should still pass
             },
           },
           { id: 'n2', name: 'End', type: 'End', position: [200, 0], config: {} },
@@ -221,7 +254,7 @@ describe('run-gate-strict: ADR-0020/0021 resource refs optional', () => {
     expect(result.errors).toHaveLength(0)
   })
 
-  it('run succeeds with action_text, done_criteria, and empty resource ref arrays', () => {
+  it('run fails with invalid agent_ref shape', () => {
     const data = {
       version: '1',
       skill: {
@@ -238,10 +271,11 @@ describe('run-gate-strict: ADR-0020/0021 resource refs optional', () => {
             type: 'Agent',
             position: [100, 0],
             config: {
+              agent_ref: {
+                package: 'test-package',
+              },
               action_text: 'Do the task',
               done_criteria: 'Task complete',
-              knowledge_refs: [],
-              tool_refs: [],
             },
           },
           { id: 'n2', name: 'End', type: 'End', position: [200, 0], config: {} },
@@ -252,46 +286,7 @@ describe('run-gate-strict: ADR-0020/0021 resource refs optional', () => {
 
     const result = validateRun(data)
 
-    expect(result.valid).toBe(true)
-    expect(result.errors).toHaveLength(0)
-  })
-
-  it('run succeeds with action_text, done_criteria, and populated resource refs', () => {
-    const data = {
-      version: '1',
-      skill: {
-        id: 'test-skill',
-        name: 'Test',
-        description: 'Test skill',
-      },
-      workflow: {
-        nodes: [
-          { id: 'n1', name: 'Start', type: 'Start', position: [0, 0], config: {} },
-          {
-            id: 'agent1',
-            name: 'Test Agent',
-            type: 'Agent',
-            position: [100, 0],
-            config: {
-              action_text: 'Do the task',
-              done_criteria: 'Task complete',
-              knowledge_refs: [
-                'kb-knowledge-base',
-              ],
-              tool_refs: [
-                'tool-search',
-              ],
-            },
-          },
-          { id: 'n2', name: 'End', type: 'End', position: [200, 0], config: {} },
-        ],
-        edges: [],
-      },
-    }
-
-    const result = validateRun(data)
-
-    expect(result.valid).toBe(true)
-    expect(result.errors).toHaveLength(0)
+    expect(result.valid).toBe(false)
+    expect(result.errors.length).toBeGreaterThan(0)
   })
 })

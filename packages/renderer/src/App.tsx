@@ -5,11 +5,15 @@
 import { useState } from 'react';
 import { useWorkflowStore } from './store/workflowStore';
 import { WorkflowEditor } from './components/WorkflowEditor';
+import { CatalogControls } from './components/CatalogControls';
+import { ExecutionPanel } from './components/ExecutionPanel';
 import { ErrorCard } from './components/ErrorCard';
 import { WarningCard } from './components/WarningCard';
 import { SuccessCard } from './components/SuccessCard';
+import { runWorkflowSimulation } from './lib/runWorkflow';
 import { validateForDraft, validateForPublish } from './lib/validation';
 import type { ValidationError } from '@opencode/skill-schema';
+import type { RunSession } from '../../run-orchestrator/src';
 
 type NotificationState = {
   type: 'error' | 'warning' | 'success' | null;
@@ -20,13 +24,15 @@ type NotificationState = {
 
 function App() {
   const [filename] = useState<string>('untitled.skill.json');
-  const { nodes, edges, metadata, readOnlyMode } = useWorkflowStore();
+  const { nodes, edges, metadata, readOnlyMode, agentCatalog } = useWorkflowStore();
   const [notification, setNotification] = useState<NotificationState>({
     type: null,
     errors: [],
     warnings: [],
     message: '',
   });
+  const [runHistory, setRunHistory] = useState<RunSession[]>([]);
+  const [activeRunSessionId, setActiveRunSessionId] = useState<string | null>(null);
 
   // Build workflow for validation
   const workflow = {
@@ -98,6 +104,43 @@ function App() {
     }, 5000);
   };
 
+  // Run handler
+  const handleRun = async () => {
+    const result = await runWorkflowSimulation(workflow, agentCatalog);
+    setRunHistory((previous) => [result, ...previous].slice(0, 5));
+    setActiveRunSessionId(result.id);
+
+    if (result.state === 'failed') {
+      setNotification({
+        type: 'error',
+        errors: result.errors,
+        warnings: [],
+        message: 'Run failed',
+      });
+      return;
+    }
+
+    if (result.errors.length > 0) {
+      setNotification({
+        type: 'warning',
+        errors: [],
+        warnings: result.errors.map((error) => error.message_user),
+        message: 'Run completed with warnings',
+      });
+    } else {
+      setNotification({
+        type: 'success',
+        errors: [],
+        warnings: [],
+        message: 'Run completed successfully',
+      });
+    }
+
+    setTimeout(() => {
+      setNotification((prev) => ({ ...prev, type: null }));
+    }, 5000);
+  };
+
   // Dismiss notification
   const dismissNotification = () => {
     setNotification((prev) => ({ ...prev, type: null }));
@@ -122,6 +165,7 @@ function App() {
             OpenCode
           </h1>
           <span style={{ fontSize: '13px', color: '#a3a3a3' }}>{filename}</span>
+          <CatalogControls />
         </div>
 
         <div style={{ display: 'flex', gap: '12px' }}>
@@ -141,6 +185,23 @@ function App() {
             }}
           >
             Draft Save
+          </button>
+          <button
+            onClick={handleRun}
+            disabled={readOnlyMode}
+            style={{
+              padding: '8px 16px',
+              background: readOnlyMode ? '#27272a' : '#16a34a',
+              border: 'none',
+              borderRadius: '6px',
+              color: '#fff',
+              fontSize: '13px',
+              fontWeight: '500',
+              cursor: readOnlyMode ? 'not-allowed' : 'pointer',
+              opacity: readOnlyMode ? 0.5 : 1,
+            }}
+          >
+            Run
           </button>
           <button
             onClick={handlePublish}
@@ -174,6 +235,17 @@ function App() {
       )}
       {notification.type === 'success' && (
         <SuccessCard message={notification.message} onDismiss={dismissNotification} />
+      )}
+      {runHistory.length > 0 && (
+        <ExecutionPanel
+          sessions={runHistory}
+          activeSessionId={activeRunSessionId}
+          onSelectSession={setActiveRunSessionId}
+          onDismiss={() => {
+            setRunHistory([])
+            setActiveRunSessionId(null)
+          }}
+        />
       )}
     </div>
   );

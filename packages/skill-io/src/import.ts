@@ -104,7 +104,7 @@ export async function importFromMarkdown(markdownPath: string): Promise<ImportRe
     const skillData: ImportedSkillData = {
       version: '1',
       skill: {
-        id: frontmatter.id || frontmatter.name?.toString().toLowerCase().replace(/\s+/g, '-') || 'imported-skill',
+        id: frontmatter.id?.toString() || frontmatter.name?.toString().toLowerCase().replace(/\s+/g, '-') || 'imported-skill',
         name: frontmatter.name?.toString() || 'Imported Skill',
         description: frontmatter.description?.toString() || 'Imported from SKILL.md',
         license: frontmatter.license?.toString(),

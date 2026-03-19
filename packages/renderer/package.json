@@ -12,6 +12,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@opencode/run-orchestrator": "workspace:*",
     "@hookform/resolvers": "^3.3.0",
     "@opencode/skill-domain": "workspace:*",
     "@opencode/skill-io": "workspace:*",

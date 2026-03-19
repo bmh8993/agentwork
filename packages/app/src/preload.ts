@@ -18,6 +18,8 @@ const electronAPI = {
   // loadSkill: (filePath: string) => ipcRenderer.invoke('skill:load', filePath),
   // saveSkill: (data: SkillData) => ipcRenderer.invoke('skill:save', data),
   // publishSkill: (data: SkillData) => ipcRenderer.invoke('skill:publish', data),
+  loadPackageCatalog: (packagePath: string) =>
+    ipcRenderer.invoke('catalog:load-package', packagePath),
 
   // TODO: Add run operations
   // runSkill: (skillId: string) => ipcRenderer.invoke('skill:run', skillId),

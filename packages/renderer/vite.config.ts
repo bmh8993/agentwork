@@ -8,6 +8,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@opencode/run-orchestrator': path.resolve(__dirname, '../run-orchestrator/src'),
       '@opencode/skill-schema': path.resolve(__dirname, '../skill-schema/src'),
       '@opencode/skill-domain': path.resolve(__dirname, '../skill-domain/src'),
       '@opencode/skill-io': path.resolve(__dirname, '../skill-io/src'),

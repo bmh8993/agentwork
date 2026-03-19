@@ -1,0 +1,28 @@
+{
+  "version": "1",
+  "skill": {
+    "id": "customer-support-skill",
+    "name": "Customer Support Skill",
+    "description": "A skill package with reusable agents",
+    "content_md": "## Customer Support\n\nReusable agents for support workflows."
+  },
+  "workflow": {
+    "nodes": [
+      {
+        "id": "start-1",
+        "name": "Start",
+        "type": "Start",
+        "position": [0, 0],
+        "config": {}
+      },
+      {
+        "id": "end-1",
+        "name": "End",
+        "type": "End",
+        "position": [200, 0],
+        "config": {}
+      }
+    ],
+    "edges": []
+  }
+}

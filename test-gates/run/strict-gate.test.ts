@@ -10,8 +10,10 @@ import { promises as fs } from 'fs'
 import { join } from 'path'
 import { fileURLToPath } from 'url'
 import {
+  createCatalogKey,
   performPreFlightValidation,
   createRunSession,
+  type AgentExecutorCatalog,
   validateRunSession,
   startRunSession,
   simulateRunExecution,
@@ -135,6 +137,48 @@ describe('run-gate-strict', () => {
 
       expect(executionResult.state).toBe('completed')
       expect(executionResult.completedAt).toBeDefined()
+    })
+
+    it('should continue parallel execution when one branch fails and still run join node', async () => {
+      const workflow = await loadFixture('parallel-partial-failure.json')
+
+      const session = createRunSession('test-session-parallel-1')
+      const validatedSession = validateRunSession(session, workflow)
+      const executionResult = await simulateRunExecution(validatedSession, workflow)
+
+      expect(executionResult.state).toBe('completed')
+      expect(executionResult.errors.some((e) => e.message_user.includes('Branch B'))).toBe(true)
+      expect(executionResult.nodeResults).toHaveLength(6)
+
+      const judgeResult = executionResult.nodeResults?.find((result) => result.nodeId === 'judge')
+      expect(judgeResult).toBeDefined()
+      expect(judgeResult?.branch_outputs).toBeDefined()
+      expect(judgeResult?.branch_outputs).toHaveLength(2)
+      expect(judgeResult!.branch_outputs!.some((output) => output.node_id === 'branch-a' && output.status === 'success')).toBe(true)
+      expect(judgeResult!.branch_outputs!.some((output) => output.node_id === 'branch-b' && output.status === 'failed')).toBe(true)
+    })
+
+    it('should resolve agent-specific adapters from the executor catalog using agent_ref', async () => {
+      const workflow = await loadFixture('valid-workflow.json')
+      const session = createRunSession('test-session-catalog-1')
+      const validatedSession = validateRunSession(session, workflow)
+
+      const catalog: AgentExecutorCatalog = {
+        [createCatalogKey({ package: 'test-package', name: 'test-agent' })]: {
+          async execute(node, context) {
+            return {
+              status: 'success',
+              output: `catalog:${node.id}:${context.sessionId}`,
+            }
+          },
+        },
+      }
+
+      const executionResult = await simulateRunExecution(validatedSession, workflow, undefined, catalog)
+
+      expect(executionResult.state).toBe('completed')
+      const agentResult = executionResult.nodeResults?.find((result) => result.nodeId === 'n2')
+      expect(agentResult?.output).toBe('catalog:n2:test-session-catalog-1')
     })
   })
 

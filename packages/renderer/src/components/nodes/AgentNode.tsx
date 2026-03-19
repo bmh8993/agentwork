@@ -1,32 +1,32 @@
 /**
  * Agent Node Component
  *
- * Core workflow node with required slots: Knowledge, Tool, Action, Done Criteria.
+ * Core workflow node with agent_ref, Action, Done Criteria.
  * ADR-0017: Agent Card UX and Draft/Publish Gate
+ * ADR-0022: AgentNode references Agent via agent_ref
+ * ADR-0023: Supports parallel execution via fan-out/fan-in edges
  */
 
 import { Handle, Position, type NodeProps } from '@xyflow/react';
-import type { NodeData } from '../../types/workflow';
+import type { NodeData, AgentReference } from '../../types/workflow';
 
 export function AgentNode({ data }: NodeProps) {
   const nodeData = data as NodeData;
+  const displayName = (nodeData.name || 'Agent').replace(/^\s*🤖\s*/, '');
 
   // Check if required fields are populated (from config object)
+  const agentRef = nodeData.config?.agent_ref as AgentReference | undefined;
   const actionText = nodeData.config?.action_text;
   const doneCriteria = nodeData.config?.done_criteria;
+  const hasAgentRef = !!agentRef && !!agentRef.package && !!agentRef.name;
   const hasActionText = !!actionText && actionText.trim().length > 0;
   const hasDoneCriteria = !!doneCriteria && doneCriteria.trim().length > 0;
-  const isComplete = hasActionText && hasDoneCriteria;
+  const isComplete = hasAgentRef && hasActionText && hasDoneCriteria;
 
-  // ADR-0020/0021: Knowledge and Tool refs are now arrays
-  const knowledgeRefs = nodeData.config?.knowledge_refs;
-  const toolRefs = nodeData.config?.tool_refs;
-  const knowledgeDisplay = knowledgeRefs && knowledgeRefs.length > 0
-    ? knowledgeRefs.join(', ')
-    : '(empty)';
-  const toolDisplay = toolRefs && toolRefs.length > 0
-    ? toolRefs.join(', ')
-    : '(empty)';
+  // ADR-0022: Display agent_ref as "package/name"
+  const agentRefDisplay = hasAgentRef
+    ? `${agentRef.package}/${agentRef.name}`
+    : '(no agent selected)';
 
   return (
     <div
@@ -55,7 +55,7 @@ export function AgentNode({ data }: NodeProps) {
         }}
       >
         <span style={{ fontSize: '20px' }}>🤖</span>
-        <strong>{nodeData.name || 'Agent'}</strong>
+        <strong>{displayName}</strong>
         {!isComplete && (
           <span
             style={{
@@ -74,24 +74,21 @@ export function AgentNode({ data }: NodeProps) {
 
       {/* Required Slots Preview */}
       <div style={{ fontSize: '12px', opacity: 0.9 }}>
+        {/* ADR-0022: Agent Reference */}
         <div style={{ marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span>📚 Knowledge:</span>
-          <span style={{ opacity: knowledgeRefs && knowledgeRefs.length > 0 ? 1 : 0.5 }}>
-            {knowledgeDisplay}
+          <span style={{ color: hasAgentRef ? '#10b981' : '#f59e0b' }}>🤖 Agent:</span>
+          <span style={{ opacity: hasAgentRef ? 1 : 0.5 }}>
+            {agentRefDisplay}
           </span>
         </div>
-        <div style={{ marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span>🔧 Tool:</span>
-          <span style={{ opacity: toolRefs && toolRefs.length > 0 ? 1 : 0.5 }}>
-            {toolDisplay}
-          </span>
-        </div>
+        {/* ADR-0020/0022: Action owned by AgentNode */}
         <div style={{ marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
           <span style={{ color: hasActionText ? '#10b981' : '#f59e0b' }}>⚡ Action:</span>
           <span style={{ opacity: hasActionText ? 1 : 0.5 }}>
             {actionText || '(required)'}
           </span>
         </div>
+        {/* ADR-0020/0022: Done Criteria owned by AgentNode */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <span style={{ color: hasDoneCriteria ? '#10b981' : '#f59e0b' }}>✅ Done:</span>
           <span style={{ opacity: hasDoneCriteria ? 1 : 0.5 }}>
