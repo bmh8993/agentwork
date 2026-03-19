@@ -7,6 +7,7 @@
 
 import { create } from 'zustand';
 import type { NodeData, Edge, WorkflowState, ReadOnlyFlags, NodeType } from '../types/workflow';
+import { createEmptyCatalog, type AgentCatalog } from '../types/agent';
 import { CARDINALITY_RULES } from '../types/workflow';
 
 interface WorkflowStore extends WorkflowState {
@@ -19,6 +20,10 @@ interface WorkflowStore extends WorkflowState {
   setWorkflow: (workflow: WorkflowState) => void;
   setReadOnlyMode: (flags: ReadOnlyFlags) => void;
   clearWorkflow: () => void;
+
+  // ADR-0022: Package/Agent catalog state
+  agentCatalog: AgentCatalog;
+  setAgentCatalog: (catalog: AgentCatalog) => void;
 
   // ADR-0019: Cardinality guards
   canAddNodeType: (type: NodeType) => boolean;
@@ -58,6 +63,7 @@ const initialState: WorkflowState = {
 
 export const useWorkflowStore = create<WorkflowStore>((set, get) => ({
   ...initialState,
+  agentCatalog: createEmptyCatalog(),
 
   // ADR-0019: Cardinality guard - check if node type can be added
   canAddNodeType: (type: NodeType) => {
@@ -160,6 +166,8 @@ export const useWorkflowStore = create<WorkflowStore>((set, get) => ({
     }),
 
   clearWorkflow: () => set(initialState),
+
+  setAgentCatalog: (catalog) => set({ agentCatalog: catalog }),
 
   validationErrors: [],
   setValidationErrors: (errors) => set({ validationErrors: errors }),

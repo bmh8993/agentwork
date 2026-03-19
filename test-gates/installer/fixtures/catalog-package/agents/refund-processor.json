@@ -1,0 +1,9 @@
+{
+  "name": "refund-processor",
+  "description": "Processes refund requests",
+  "instructions": "Handle refund requests using the refund policy and support tools.",
+  "model": "anthropic/claude-sonnet-4",
+  "tool_refs": ["refund-check", "refund-log"],
+  "knowledge_refs": ["refund-policy"],
+  "skill_permissions": ["support.read", "support.write"]
+}

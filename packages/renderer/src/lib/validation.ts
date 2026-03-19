@@ -15,7 +15,7 @@ import type { Workflow } from '../types/workflow';
  * - nodes: { id, name, type, position, config }
  * - edges: { id, source_node_id, target_node_id, branch }
  */
-function workflowToSkillJson(workflow: Workflow): any {
+export function workflowToSkillJson(workflow: Workflow): any {
   // Build minimal skill metadata if not present
   const skill = {
     id: workflow.metadata?.name || 'skill-placeholder',

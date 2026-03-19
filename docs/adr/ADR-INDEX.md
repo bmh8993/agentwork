@@ -1,15 +1,15 @@
 # ADR Index and Status Board
 
-- Date: 2026-03-17
+- Date: 2026-03-18
 - Status: Active
 - Scope: `docs/adr/*`
 
 ## 1) Summary
 
-1. Total ADR: `21`
-2. `Accepted`: `15`
+1. Total ADR: `23`
+2. `Accepted`: `16`
 3. `Superseded`: `6`
-4. `Proposed`: `0`
+4. `Proposed`: `1`
 
 ## 2) Accepted
 
@@ -30,6 +30,7 @@
 | `ADR-0019` | 2026-03-14 | Start/End 각각 1개 고정과 구조 오류 호환 정책 |
 | `ADR-0020` | 2026-03-17 | AgentNode 조합 단위와 Action 소유권 명확화 |
 | `ADR-0021` | 2026-03-17 | AgentNode 리소스 참조 필드 shape 고정 |
+| `ADR-0022` | 2026-03-17 | Platform-neutral Assistant Package Canonical과 AgentNode Reference |
 
 ## 3) Superseded
 
@@ -42,7 +43,13 @@
 | `ADR-0011` | 2026-03-12 | 내부 Condition 표현식 평가 정책 (UI 비노출) |
 | `ADR-0013` | 2026-03-12 | Run 상태 머신과 Timeout/Cancel 정책 |
 
-## 4) Lifecycle Rules
+## 4) Proposed
+
+| ADR | Date | Title |
+|---|---|---|
+| `ADR-0023` | 2026-03-18 | Graph Fan-out/Fan-in 기반 Parallel AgentNode Execution |
+
+## 5) Lifecycle Rules
 
 1. 신규 결정은 `ADR-XXXX-*.md`로 추가한다.
 2. 기존 결정을 뒤집을 때는 기존 ADR을 수정하지 않는다.
@@ -50,7 +57,7 @@
 4. 대체 관계는 양쪽 ADR의 `Related Decisions`에 기록한다.
 5. 이 인덱스는 ADR 상태가 바뀔 때 같이 업데이트한다.
 
-## 5) Update Checklist
+## 6) Update Checklist
 
 1. 신규 ADR 번호가 순번 규칙(`0001`, `0002`, ...)을 지켰는가?
 2. `Status`, `Date`, `Related Decisions`가 모두 채워졌는가?

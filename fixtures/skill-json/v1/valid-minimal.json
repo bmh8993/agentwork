@@ -20,8 +20,10 @@
         "type": "Agent",
         "position": [200, 0],
         "config": {
-          "knowledge_refs": [],
-          "tool_refs": [],
+          "agent_ref": {
+            "package": "test-package",
+            "name": "test-agent"
+          },
           "action_text": "Complete the task",
           "done_criteria": "Task is marked as complete"
         }

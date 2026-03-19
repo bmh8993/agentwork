@@ -1,0 +1,5 @@
+{
+  "name": "refund-check",
+  "description": "Checks refund eligibility",
+  "script_ref": "refund-check.sh"
+}

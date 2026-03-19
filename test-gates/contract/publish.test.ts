@@ -29,9 +29,17 @@ function createSkillWithAgent(config: Record<string, unknown>) {
   }
 }
 
+function createValidAgentRef() {
+  return {
+    package: 'test-package',
+    name: 'test-agent',
+  }
+}
+
 describe('publish-gate-required-fields: Publish blocking', () => {
   it('missing action_text blocks publish', () => {
     const data = createSkillWithAgent({
+      agent_ref: createValidAgentRef(),
       done_criteria: 'Task complete',
       // action_text missing
     })
@@ -48,6 +56,7 @@ describe('publish-gate-required-fields: Publish blocking', () => {
 
   it('missing done_criteria blocks publish', () => {
     const data = createSkillWithAgent({
+      agent_ref: createValidAgentRef(),
       action_text: 'Do the task',
       // done_criteria missing
     })
@@ -74,12 +83,14 @@ describe('publish-gate-required-fields: Publish blocking', () => {
 
     const requiredFieldErrors = result.errors.filter((e) => e.code === ERROR_CODES.PUBLISH_REQUIRED_FIELD_MISSING)
     expect(requiredFieldErrors.length).toBe(1) // One error for the node, but mentions both fields
+    expect(requiredFieldErrors[0].message_user).toContain('agent_ref')
     expect(requiredFieldErrors[0].message_user).toContain('action_text')
     expect(requiredFieldErrors[0].message_user).toContain('done_criteria')
   })
 
-  it('both fields present allows publish', () => {
+  it('agent_ref, action_text, and done_criteria allow publish', () => {
     const data = createSkillWithAgent({
+      agent_ref: createValidAgentRef(),
       action_text: 'Do the task',
       done_criteria: 'Task complete',
     })
@@ -92,6 +103,10 @@ describe('publish-gate-required-fields: Publish blocking', () => {
 
   it('empty string values are treated as missing', () => {
     const data = createSkillWithAgent({
+      agent_ref: {
+        package: ' ',
+        name: '',
+      },
       action_text: '   ', // whitespace only
       done_criteria: '',
     })
@@ -101,11 +116,25 @@ describe('publish-gate-required-fields: Publish blocking', () => {
     expect(result.valid).toBe(false)
     expect(result.errors.length).toBeGreaterThan(0)
   })
+  it('missing agent_ref blocks publish', () => {
+    const data = createSkillWithAgent({
+      action_text: 'Do the task',
+      done_criteria: 'Task complete',
+    })
+
+    const result = validatePublish(data)
+
+    expect(result.valid).toBe(false)
+    const requiredFieldErrors = result.errors.filter((e) => e.code === ERROR_CODES.PUBLISH_REQUIRED_FIELD_MISSING)
+    expect(requiredFieldErrors.length).toBeGreaterThan(0)
+    expect(requiredFieldErrors[0].message_user).toContain('agent_ref')
+  })
 })
 
 describe('publish-gate-required-fields: Draft vs Publish', () => {
   it('draft allows missing action_text as warning only', () => {
     const data = createSkillWithAgent({
+      agent_ref: createValidAgentRef(),
       done_criteria: 'Task complete',
     })
 
@@ -124,6 +153,7 @@ describe('publish-gate-required-fields: Draft vs Publish', () => {
 
   it('draft allows missing done_criteria as warning only', () => {
     const data = createSkillWithAgent({
+      agent_ref: createValidAgentRef(),
       action_text: 'Do the task',
     })
 
@@ -142,6 +172,7 @@ describe('publish-gate-required-fields: Draft vs Publish', () => {
 
   it('complete agent passes both draft and publish', () => {
     const data = createSkillWithAgent({
+      agent_ref: createValidAgentRef(),
       action_text: 'Do the task',
       done_criteria: 'Task complete',
     })
@@ -154,6 +185,21 @@ describe('publish-gate-required-fields: Draft vs Publish', () => {
 
     expect(publishResult.valid).toBe(true)
     expect(publishResult.errors).toHaveLength(0)
+  })
+  it('draft allows missing agent_ref as warning only', () => {
+    const data = createSkillWithAgent({
+      action_text: 'Do the task',
+      done_criteria: 'Task complete',
+    })
+
+    const draftResult = validateDraft(data)
+    const publishResult = validatePublish(data)
+
+    expect(draftResult.valid).toBe(true)
+    expect(draftResult.warnings.some((w) => w.includes('agent_ref'))).toBe(true)
+
+    expect(publishResult.valid).toBe(false)
+    expect(publishResult.errors.some((e) => e.code === ERROR_CODES.PUBLISH_REQUIRED_FIELD_MISSING)).toBe(true)
   })
 })
 
@@ -169,7 +215,7 @@ describe('publish-gate-required-fields: Multiple agents', () => {
       workflow: {
         nodes: [
           { id: 'n1', name: 'Start', type: 'Start', position: [0, 0], config: {} },
-          { id: 'agent1', name: 'Agent 1', type: 'Agent', position: [100, 0], config: { action_text: 'Task 1' } },
+          { id: 'agent1', name: 'Agent 1', type: 'Agent', position: [100, 0], config: { agent_ref: createValidAgentRef(), action_text: 'Task 1' } },
           { id: 'agent2', name: 'Agent 2', type: 'Agent', position: [200, 0], config: {} },
           { id: 'n2', name: 'End', type: 'End', position: [300, 0], config: {} },
         ],
@@ -189,9 +235,9 @@ describe('publish-gate-required-fields: Multiple agents', () => {
 describe('publish-gate-required-fields: ADR-0020/0021 resource refs optional', () => {
   it('publish succeeds with action_text and done_criteria, no resource refs', () => {
     const data = createSkillWithAgent({
+      agent_ref: createValidAgentRef(),
       action_text: 'Do the task',
       done_criteria: 'Task complete',
-      // knowledge_refs and tool_refs absent - should still pass
     })
 
     const result = validatePublish(data)
@@ -200,12 +246,11 @@ describe('publish-gate-required-fields: ADR-0020/0021 resource refs optional', (
     expect(result.errors).toHaveLength(0)
   })
 
-  it('publish succeeds with action_text, done_criteria, and empty resource ref arrays', () => {
+  it('publish succeeds with agent_ref, action_text, and done_criteria only', () => {
     const data = createSkillWithAgent({
+      agent_ref: createValidAgentRef(),
       action_text: 'Do the task',
       done_criteria: 'Task complete',
-      knowledge_refs: [],
-      tool_refs: [],
     })
 
     const result = validatePublish(data)
@@ -214,21 +259,18 @@ describe('publish-gate-required-fields: ADR-0020/0021 resource refs optional', (
     expect(result.errors).toHaveLength(0)
   })
 
-  it('publish succeeds with action_text, done_criteria, and populated resource refs', () => {
+  it('publish fails when agent_ref shape is invalid', () => {
     const data = createSkillWithAgent({
+      agent_ref: {
+        package: 'test-package',
+      },
       action_text: 'Do the task',
       done_criteria: 'Task complete',
-      knowledge_refs: [
-        'kb-knowledge-base',
-      ],
-      tool_refs: [
-        'tool-search',
-      ],
     })
 
     const result = validatePublish(data)
 
-    expect(result.valid).toBe(true)
-    expect(result.errors).toHaveLength(0)
+    expect(result.valid).toBe(false)
+    expect(result.errors.length).toBeGreaterThan(0)
   })
 })

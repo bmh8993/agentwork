@@ -117,7 +117,7 @@ export const ERROR_CATALOG: Record<ErrorCode, Omit<ValidationError, 'path'>> = {
     category: ERROR_CATEGORIES.ValidationError,
     trigger_stage: TRIGGER_STAGES.PUBLISH,
     message_user: 'Required publish fields are missing.',
-    next_action: 'Fill `action_text` and `done_criteria`.',
+    next_action: 'Fill `agent_ref`, `action_text`, and `done_criteria`.',
     retryable: false,
   },
   [ERROR_CODES.PUBLISH_VALIDATION_FAILED]: {

@@ -1,57 +1,65 @@
 /**
  * Agent Card Editor Component
  *
- * Form for editing Agent node required slots:
- * - Knowledge refs (optional, array)
- * - Tool refs (optional, array)
+ * Form for editing Agent node:
+ * - Agent Reference (required for Publish) - selects reusable Agent from package catalog
  * - Action (required for Publish)
  * - Done Criteria (required for Publish)
  *
  * ADR-0017: Agent Card UX and Draft/Publish Gate
- * ADR-0021: AgentNode Resource Reference Shape (arrays)
+ * ADR-0022: AgentNode references Agent via agent_ref
  *
- * UX STRATEGY (Option A):
- * - Single text input per field with comma-separated values
- * - Convert to/from arrays on form submit/load
- * - Store canonical arrays in node config
+ * UX STRATEGY:
+ * - Agent ref as catalog-backed picker
+ * - Action and Done Criteria as text areas
+ * - Store agent_ref, action_text, done_criteria in node config
  */
 
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useWorkflowStore } from '../store/workflowStore';
-import type { NodeData } from '../types/workflow';
+import type { NodeData, AgentReference } from '../types/workflow';
 
 /**
- * Helper: Convert comma-separated string to array of trimmed refs
- * Handles empty strings and extra whitespace
+ * Helper: Parse agent_ref string "package/name" into AgentReference object
  */
-function commaStringToArray(value: string): string[] {
+function parseAgentRef(value: string): AgentReference | undefined {
   if (!value || value.trim() === '') {
-    return []
+    return undefined;
   }
-  return value
-    .split(',')
-    .map((ref) => ref.trim())
-    .filter((ref) => ref.length > 0)
+  const parts = value.trim().split('/');
+  if (parts.length !== 2) {
+    return undefined;
+  }
+  return {
+    package: parts[0].trim(),
+    name: parts[1].trim(),
+  };
 }
 
 /**
- * Helper: Convert array to comma-separated string for form display
+ * Helper: Convert AgentReference object to "package/name" string
  */
-function arrayToCommaString(array?: string[]): string {
-  if (!array || array.length === 0) {
-    return ''
+function agentRefToString(agentRef?: AgentReference): string {
+  if (!agentRef || !agentRef.package || !agentRef.name) {
+    return '';
   }
-  return array.join(', ')
+  return `${agentRef.package}/${agentRef.name}`;
 }
 
-// Form schema - Action and Done Criteria are required for Publish
-// UX: knowledge_refs_input and tool_refs_input are comma-separated strings
+function isValidAgentRefString(value: string): boolean {
+  return parseAgentRef(value) !== undefined
+}
+
+// Form schema - Agent ref, Action and Done Criteria are required for Publish
 const agentCardSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  knowledge_refs_input: z.string().optional(),
-  tool_refs_input: z.string().optional(),
+  agent_ref_input: z
+    .string()
+    .min(1, { message: 'Agent reference is required (format: package/name)' })
+    .refine(isValidAgentRefString, { message: 'Agent reference must use the format package/name' }),
   action_text: z.string().min(1, { message: 'Action is required for Publish' }),
   done_criteria: z.string().min(1, { message: 'Done Criteria is required for Publish' }),
 });
@@ -64,35 +72,81 @@ interface AgentCardEditorProps {
 }
 
 export function AgentCardEditor({ node, onClose }: AgentCardEditorProps) {
-  const { updateNode } = useWorkflowStore();
+  const { updateNode, agentCatalog } = useWorkflowStore();
+  const [agentSearch, setAgentSearch] = useState('');
+  const currentAgentRef = node.config?.agent_ref as AgentReference | undefined;
+  const currentAgentRefValue = agentRefToString(currentAgentRef);
+  const normalizedSearch = agentSearch.trim().toLowerCase();
+  const catalogAgentOptions = useMemo(
+    () =>
+      Object.values(agentCatalog.agents)
+        .filter((agent) => {
+          if (!normalizedSearch) {
+            return true;
+          }
+
+          const haystack = [
+            agent.package,
+            agent.name,
+            agent.description ?? '',
+            agent.model ?? '',
+          ]
+            .join(' ')
+            .toLowerCase();
+
+          return haystack.includes(normalizedSearch);
+        })
+        .map((agent) => `${agent.package}/${agent.name}`)
+        .sort(),
+    [agentCatalog.agents, normalizedSearch]
+  );
+  const agentOptions = currentAgentRefValue && !catalogAgentOptions.includes(currentAgentRefValue)
+    ? [currentAgentRefValue, ...catalogAgentOptions]
+    : catalogAgentOptions;
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<AgentCardFormData>({
     resolver: zodResolver(agentCardSchema),
     defaultValues: {
       name: node.name || '',
-      // Convert canonical arrays to comma-separated strings for form
-      knowledge_refs_input: arrayToCommaString(node.config?.knowledge_refs),
-      tool_refs_input: arrayToCommaString(node.config?.tool_refs),
+      // Convert agent_ref object to "package/name" string for form
+      agent_ref_input: currentAgentRefValue,
       action_text: node.config?.action_text || '',
       done_criteria: node.config?.done_criteria || '',
     },
   });
+  const selectedAgentRefValue = watch('agent_ref_input', currentAgentRefValue);
+  const selectedAgentRef = parseAgentRef(selectedAgentRefValue);
+  const selectedAgent = selectedAgentRef
+    ? agentCatalog.agents[`${selectedAgentRef.package}/${selectedAgentRef.name}`]
+    : undefined;
+  const selectedToolNames = (selectedAgent?.tool_refs ?? []).map(
+    (toolRef) => agentCatalog.tools[toolRef]?.name ?? toolRef
+  );
+  const selectedKnowledgeNames = (selectedAgent?.knowledge_refs ?? []).map(
+    (knowledgeRef) => agentCatalog.knowledge[knowledgeRef]?.name ?? knowledgeRef
+  );
+  const groupedAgentOptions = agentOptions.reduce<Record<string, string[]>>((groups, option) => {
+    const ref = parseAgentRef(option);
+    const packageId = ref?.package ?? 'ungrouped';
+    groups[packageId] = groups[packageId] ?? [];
+    groups[packageId].push(option);
+    return groups;
+  }, {});
 
   const onSubmit = (data: AgentCardFormData) => {
-    // Convert comma-separated strings to canonical arrays
-    const knowledge_refs = commaStringToArray(data.knowledge_refs_input || '')
-    const tool_refs = commaStringToArray(data.tool_refs_input || '')
+    // Parse "package/name" string to AgentReference object
+    const agent_ref = parseAgentRef(data.agent_ref_input);
 
     updateNode(node.id, {
       name: data.name,
       config: {
-        // Store canonical arrays (ADR-0021)
-        knowledge_refs,
-        tool_refs,
+        // ADR-0022: Store agent_ref object (not inline agent config)
+        agent_ref,
         action_text: data.action_text,
         done_criteria: data.done_criteria,
       },
@@ -161,6 +215,7 @@ export function AgentCardEditor({ node, onClose }: AgentCardEditorProps) {
           {/* Name */}
           <div>
             <label
+              htmlFor="agent-node-name"
               style={{
                 display: 'block',
                 fontSize: '13px',
@@ -172,8 +227,9 @@ export function AgentCardEditor({ node, onClose }: AgentCardEditorProps) {
               Name
             </label>
             <input
+              id="agent-node-name"
               {...register('name')}
-              placeholder="Agent name"
+              placeholder="Agent node name"
               style={{
                 width: '100%',
                 padding: '10px 12px',
@@ -191,37 +247,40 @@ export function AgentCardEditor({ node, onClose }: AgentCardEditorProps) {
             )}
           </div>
 
-          {/* Knowledge refs (Optional) */}
+          {/* Agent Reference (Required for Publish) - ADR-0022 */}
           <div>
             <label
+              htmlFor="agent-search-input"
               style={{
                 display: 'block',
-                fontSize: '13px',
+                fontSize: '12px',
                 fontWeight: '500',
-                color: '#d4d4d8',
+                color: '#a1a1aa',
                 marginBottom: '6px',
               }}
             >
-              📚 Knowledge Refs <span style={{ color: '#737373', fontWeight: '400' }}>(optional, comma-separated)</span>
+              Search
             </label>
             <input
-              {...register('knowledge_refs_input')}
-              placeholder="e.g., kb-refund-policy, kb-shipping-guide"
+              id="agent-search-input"
+              value={agentSearch}
+              onChange={(event) => setAgentSearch(event.target.value)}
+              placeholder="Search catalog agents"
               style={{
                 width: '100%',
-                padding: '10px 12px',
+                padding: '8px 12px',
                 background: '#18181b',
                 border: '1px solid #3f3f46',
                 borderRadius: '6px',
                 color: '#e5e5e5',
-                fontSize: '14px',
+                fontSize: '13px',
               }}
             />
           </div>
 
-          {/* Tool refs (Optional) */}
           <div>
             <label
+              htmlFor="agent-ref-picker"
               style={{
                 display: 'block',
                 fontSize: '13px',
@@ -230,26 +289,158 @@ export function AgentCardEditor({ node, onClose }: AgentCardEditorProps) {
                 marginBottom: '6px',
               }}
             >
-              🔧 Tool Refs <span style={{ color: '#737373', fontWeight: '400' }}>(optional, comma-separated)</span>
+              🤖 Agent Reference <span style={{ color: '#ef4444', fontWeight: '400' }}>* required</span>
             </label>
-            <input
-              {...register('tool_refs_input')}
-              placeholder="e.g., tool-file-search, tool-api-client"
+            <select
+              id="agent-ref-picker"
+              {...register('agent_ref_input')}
               style={{
                 width: '100%',
                 padding: '10px 12px',
                 background: '#18181b',
-                border: '1px solid #3f3f46',
+                border: `1px solid ${errors.agent_ref_input ? '#ef4444' : '#3f3f46'}`,
                 borderRadius: '6px',
                 color: '#e5e5e5',
                 fontSize: '14px',
               }}
-            />
+            >
+              <option value="">Select an agent from the catalog</option>
+              {Object.entries(groupedAgentOptions).map(([packageId, options]) => {
+                const packageLabel = agentCatalog.packages[packageId]?.name ?? packageId;
+
+                return (
+                  <optgroup key={packageId} label={packageLabel}>
+                    {options.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </optgroup>
+                );
+              })}
+            </select>
+            {errors.agent_ref_input && (
+              <span style={{ fontSize: '12px', color: '#ef4444', marginTop: '4px', display: 'block' }}>
+                {errors.agent_ref_input.message}
+              </span>
+            )}
+            <div style={{ fontSize: '11px', color: '#737373', marginTop: '4px' }}>
+              {agentOptions.length > 0
+                ? 'Select a reusable Agent from the package catalog'
+                : 'Load or import a catalog to select a reusable Agent'}
+            </div>
+            {normalizedSearch && catalogAgentOptions.length === 0 && (
+              <div style={{ fontSize: '11px', color: '#fca5a5', marginTop: '4px' }}>
+                No catalog agents match this search
+              </div>
+            )}
           </div>
+
+          {selectedAgent && (
+            <div
+              style={{
+                padding: '12px',
+                background: '#18181b',
+                border: '1px solid #3f3f46',
+                borderRadius: '6px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '6px',
+              }}
+            >
+              <div style={{ fontSize: '12px', fontWeight: '600', color: '#e5e5e5' }}>
+                Selected Agent
+              </div>
+              <div style={{ fontSize: '12px', color: '#d4d4d8' }}>
+                {selectedAgent.package}/{selectedAgent.name}
+              </div>
+              {selectedAgent.model && (
+                <div style={{ fontSize: '12px', color: '#93c5fd' }}>
+                  Model: {selectedAgent.model}
+                </div>
+              )}
+              {selectedAgent.description && (
+                <div style={{ fontSize: '12px', color: '#a3a3a3' }}>
+                  {selectedAgent.description}
+                </div>
+              )}
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <div
+                  style={{
+                    padding: '4px 8px',
+                    background: '#27272a',
+                    borderRadius: '999px',
+                    fontSize: '11px',
+                    color: '#d4d4d8',
+                  }}
+                >
+                  Tools: {selectedAgent.tool_refs?.length ?? 0}
+                </div>
+                <div
+                  style={{
+                    padding: '4px 8px',
+                    background: '#27272a',
+                    borderRadius: '999px',
+                    fontSize: '11px',
+                    color: '#d4d4d8',
+                  }}
+                >
+                  Knowledge: {selectedAgent.knowledge_refs?.length ?? 0}
+                </div>
+              </div>
+              {selectedToolNames.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <div style={{ fontSize: '11px', fontWeight: '600', color: '#d4d4d8' }}>
+                    Tool Names
+                  </div>
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                    {selectedToolNames.map((toolName) => (
+                      <div
+                        key={toolName}
+                        style={{
+                          padding: '4px 8px',
+                          background: '#172554',
+                          borderRadius: '999px',
+                          fontSize: '11px',
+                          color: '#bfdbfe',
+                        }}
+                      >
+                        {toolName}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {selectedKnowledgeNames.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <div style={{ fontSize: '11px', fontWeight: '600', color: '#d4d4d8' }}>
+                    Knowledge Names
+                  </div>
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                    {selectedKnowledgeNames.map((knowledgeName) => (
+                      <div
+                        key={knowledgeName}
+                        style={{
+                          padding: '4px 8px',
+                          background: '#3f2a17',
+                          borderRadius: '999px',
+                          fontSize: '11px',
+                          color: '#fcd34d',
+                        }}
+                      >
+                        {knowledgeName}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Action (Required for Publish) */}
           <div>
             <label
+              htmlFor="agent-action-text"
               style={{
                 display: 'block',
                 fontSize: '13px',
@@ -261,8 +452,9 @@ export function AgentCardEditor({ node, onClose }: AgentCardEditorProps) {
               ⚡ Action <span style={{ color: '#ef4444', fontWeight: '400' }}>* required for Publish</span>
             </label>
             <textarea
+              id="agent-action-text"
               {...register('action_text')}
-              placeholder="What should this agent do?"
+              placeholder="What should this agent do in this workflow context?"
               rows={4}
               style={{
                 width: '100%',
@@ -285,6 +477,7 @@ export function AgentCardEditor({ node, onClose }: AgentCardEditorProps) {
           {/* Done Criteria (Required for Publish) */}
           <div>
             <label
+              htmlFor="agent-done-criteria"
               style={{
                 display: 'block',
                 fontSize: '13px',
@@ -296,6 +489,7 @@ export function AgentCardEditor({ node, onClose }: AgentCardEditorProps) {
               ✅ Done Criteria <span style={{ color: '#ef4444', fontWeight: '400' }}>* required for Publish</span>
             </label>
             <textarea
+              id="agent-done-criteria"
               {...register('done_criteria')}
               placeholder="How do we know this agent is done?"
               rows={3}
@@ -330,7 +524,7 @@ export function AgentCardEditor({ node, onClose }: AgentCardEditorProps) {
           >
             <strong>Draft Save:</strong> Can save with empty required fields
             <br />
-            <strong>Publish:</strong> Action and Done Criteria must be filled
+            <strong>Publish:</strong> Agent Reference, Action and Done Criteria must be filled
           </div>
 
           {/* Actions */}

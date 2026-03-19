@@ -7,6 +7,7 @@
 
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
+import { importAgentCatalogFromPackage } from '@opencode/skill-io';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -79,4 +80,8 @@ app.on('window-all-closed', () => {
 // Example: Health check handler
 ipcMain.handle('app:ping', async () => {
   return { status: 'ok', timestamp: Date.now() };
+});
+
+ipcMain.handle('catalog:load-package', async (_event, packagePath: string) => {
+  return importAgentCatalogFromPackage(packagePath);
 });

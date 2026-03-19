@@ -13,6 +13,7 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
+      "@opencode/run-orchestrator": ["../run-orchestrator/src"],
       "@opencode/skill-schema": ["../skill-schema/src"],
       "@opencode/skill-domain": ["../skill-domain/src"],
       "@opencode/skill-io": ["../skill-io/src"]

@@ -25,7 +25,7 @@ export function StartNode({ data }: NodeProps) {
       }}
     >
       <Handle type="source" position={Position.Bottom} style={{ background: '#10b981' }} />
-      <div>🚀 {nodeData.name || 'Start'}</div>
+      <div>{nodeData.name || 'Start'}</div>
     </div>
   );
 }

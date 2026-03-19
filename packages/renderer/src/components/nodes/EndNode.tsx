@@ -25,7 +25,7 @@ export function EndNode({ data }: NodeProps) {
       }}
     >
       <Handle type="target" position={Position.Top} style={{ background: '#ef4444' }} />
-      <div>🏁 {nodeData.name || 'End'}</div>
+      <div>{nodeData.name || 'End'}</div>
     </div>
   );
 }
